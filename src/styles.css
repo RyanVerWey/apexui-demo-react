@@ -26,121 +26,104 @@ textarea {
 .site-shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--apex-color-accent) 8%, transparent), transparent 22rem),
-    linear-gradient(180deg, color-mix(in srgb, var(--apex-color-surface) 76%, var(--apex-color-canvas)), var(--apex-color-canvas) 32rem);
+    radial-gradient(circle at 12% 8%, color-mix(in srgb, var(--apex-color-accent) 8%, transparent), transparent 22rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--apex-color-surface) 72%, var(--apex-color-canvas)), var(--apex-color-canvas) 34rem);
   color: var(--apex-color-text);
 }
 
-.site-hero {
-  padding: var(--apex-space-7) var(--apex-space-6) var(--apex-space-6);
+.route-shell {
+  padding: var(--apex-space-6);
 }
 
-.site-main {
+.business-layout {
   display: grid;
-  gap: clamp(var(--apex-space-7), 6vw, var(--apex-space-11));
-  padding-block: var(--apex-space-5) var(--apex-space-12);
+  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
+  gap: var(--apex-space-6);
+  align-items: start;
 }
 
-.hero-grid {
+.route-panel {
+  min-width: 0;
+}
+
+.hero-page {
   display: grid;
-  grid-template-columns: minmax(0, 0.78fr) minmax(460px, 1fr);
+  grid-template-columns: minmax(0, 0.82fr) minmax(420px, 1fr);
   gap: clamp(var(--apex-space-6), 5vw, var(--apex-space-10));
   align-items: start;
 }
 
 .hero-copy {
-  max-width: 58ch;
-  padding-top: var(--apex-space-3);
+  max-width: 62ch;
+  padding-top: var(--apex-space-4);
 }
 
 .hero-title {
-  max-width: 13ch;
-  font-size: 3.45rem;
-  line-height: 1.02;
+  max-width: 14ch;
+  font-size: 3.35rem;
+  line-height: 1.03;
   letter-spacing: 0;
 }
 
 .hero-subtitle {
-  max-width: 62ch;
+  max-width: 64ch;
 }
 
-.product-scene {
-  display: grid;
-  gap: var(--apex-space-5);
-  align-self: start;
-  align-content: start;
-}
-
-.scene-header {
-  display: flex;
-  gap: var(--apex-space-4);
-  align-items: start;
-  justify-content: space-between;
-}
-
-.scene-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--apex-space-3);
-  padding: var(--apex-space-4);
-  border: 1px solid var(--apex-color-border);
-  border-radius: var(--apex-radius-md);
-  background: color-mix(in srgb, var(--apex-color-surface) 72%, var(--apex-color-accent));
-}
-
-.proof-strip {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0;
-  margin-top: 0;
-  padding: 0;
-}
-
-.proof-item {
-  display: grid;
-  gap: var(--apex-space-1);
-  padding: var(--apex-space-4);
-}
-
-.proof-item + .proof-item {
-  border-left: 1px solid var(--apex-color-border);
-}
-
-.section-stack {
+.hero-console,
+.panel-stack {
   display: grid;
   gap: var(--apex-space-5);
 }
 
-.section-heading {
-  display: flex;
-  gap: var(--apex-space-5);
+.page-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 0.88fr) minmax(320px, 0.62fr);
+  gap: var(--apex-space-6);
   align-items: end;
-  justify-content: space-between;
 }
 
-.section-heading > * {
-  min-width: 0;
+.page-title {
+  max-width: 16ch;
+  font-size: 2.65rem;
+  line-height: 1.06;
+  letter-spacing: 0;
 }
 
-.section-heading > :first-child {
-  max-width: 52rem;
+.page-description {
+  max-width: 58ch;
 }
 
-.value-layout {
+.metric-band {
   display: grid;
-  grid-template-columns: minmax(320px, 0.86fr) minmax(0, 1.14fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--apex-space-4);
+}
+
+.metric-band-four {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.metric-card {
+  display: grid;
+  gap: var(--apex-space-3);
+  align-content: start;
+  min-height: 8rem;
+}
+
+.section-grid,
+.two-column {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--apex-space-5);
-  align-items: stretch;
+  align-items: start;
 }
 
-.value-statement {
-  display: grid;
-  align-content: center;
+.two-column {
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.82fr);
 }
 
-.value-list {
-  align-self: stretch;
-  margin: 0;
+.two-column-wide {
+  grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
 }
 
 .site-actions {
@@ -152,102 +135,43 @@ textarea {
   max-width: 100%;
 }
 
-.app-demo {
-  scroll-margin-top: var(--apex-space-6);
-}
-
-.workspace-shell {
-  padding: var(--apex-space-5);
-}
-
-.app-layout {
-  display: grid;
-  grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
-  gap: var(--apex-space-6);
-  align-items: start;
-}
-
-.workspace-panel {
-  min-width: 0;
-}
-
-.workspace-grid,
-.two-column {
-  display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
-  gap: var(--apex-space-5);
-  align-items: start;
-}
-
-.workspace-grid-tight {
-  grid-template-columns: minmax(320px, 0.75fr) minmax(0, 1.25fr);
-}
-
-.two-column-wide {
-  grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
-}
-
-.app-layout > *,
-.workspace-grid > *,
+.business-layout > *,
+.hero-page > *,
+.section-grid > *,
 .two-column > *,
-.hero-grid > *,
-.proof-strip > * {
+.metric-band > * {
   min-width: 0;
 }
 
 @media (max-width: 1080px) {
-  .hero-grid,
-  .proof-strip,
-  .value-layout,
-  .app-layout,
-  .workspace-grid,
-  .workspace-grid-tight,
+  .business-layout,
+  .hero-page,
+  .page-heading,
+  .section-grid,
   .two-column,
-  .two-column-wide {
+  .two-column-wide,
+  .metric-band,
+  .metric-band-four {
     grid-template-columns: 1fr;
   }
 
-  .site-hero {
+  .route-shell {
     padding-inline: var(--apex-space-4);
-  }
-
-  .section-heading {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .scene-header {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .proof-item + .proof-item {
-    border-left: 0;
-    border-top: 1px solid var(--apex-color-border);
   }
 }
 
 @media (max-width: 720px) {
-  .site-hero {
-    padding: var(--apex-space-4) var(--apex-space-3) var(--apex-space-6);
-  }
-
-  .site-main {
-    gap: var(--apex-space-7);
-    padding-block: var(--apex-space-5) var(--apex-space-8);
+  .route-shell {
+    padding: var(--apex-space-4) var(--apex-space-3) var(--apex-space-8);
   }
 
   .hero-title {
-    max-width: 11ch;
+    max-width: 12ch;
     font-size: 2.2rem;
-    line-height: 1.06;
   }
 
-  .workspace-shell {
-    padding: var(--apex-space-3);
-  }
-
-  .scene-summary {
-    grid-template-columns: 1fr;
+  .page-title {
+    max-width: 13ch;
+    font-size: 2rem;
   }
 }

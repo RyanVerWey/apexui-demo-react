@@ -18,7 +18,6 @@ import {
   DataGrid,
   DataTable,
   DatePicker,
-  Divider,
   EmptyState,
   FileUpload,
   Icon,
@@ -48,67 +47,88 @@ import {
 } from "@apexui/react";
 import "./styles.css";
 
-type PackageRow = {
-  package: React.ReactNode;
-  role: React.ReactNode;
-  usage: React.ReactNode;
+type RouteId = "home" | "metrics" | "work-orders" | "customers" | "settings" | "proof";
+
+type PageProps = {
+  navigate: (route: RouteId) => void;
+  mode: "light" | "dark";
+  setMode: (mode: "light" | "dark") => void;
+  theme: string;
+};
+
+type WorkOrderRow = {
+  crew: React.ReactNode;
+  region: React.ReactNode;
+  priority: React.ReactNode;
   status: React.ReactNode;
 };
 
 type CustomerRow = {
-  team: React.ReactNode;
-  stack: React.ReactNode;
-  outcome: React.ReactNode;
+  account: React.ReactNode;
+  plan: React.ReactNode;
+  nextVisit: React.ReactNode;
+  health: React.ReactNode;
 };
 
-const packageColumns: Array<{ key: keyof PackageRow; header: string }> = [
-  { key: "package", header: "Package" },
-  { key: "role", header: "Role" },
-  { key: "usage", header: "Usage" },
+const routes: Array<{ id: RouteId; label: string; eyebrow: string; icon: React.ReactNode }> = [
+  { id: "home", label: "Home", eyebrow: "Marketing", icon: <Icon name="home" /> },
+  { id: "metrics", label: "Metrics", eyebrow: "Dashboard", icon: <Icon name="chartLine" /> },
+  { id: "work-orders", label: "Work orders", eyebrow: "Forms", icon: <Icon name="clipboardList" /> },
+  { id: "customers", label: "Customers", eyebrow: "Records", icon: <Icon name="users" /> },
+  { id: "settings", label: "Settings", eyebrow: "Account", icon: <Icon name="settings" /> },
+  { id: "proof", label: "Package proof", eyebrow: "Integration", icon: <Icon name="package" /> }
+];
+
+const workOrderColumns: Array<{ key: keyof WorkOrderRow; header: string }> = [
+  { key: "crew", header: "Crew" },
+  { key: "region", header: "Region" },
+  { key: "priority", header: "Priority" },
   { key: "status", header: "Status" }
 ];
 
-const packageRows: PackageRow[] = [
-  { package: "@apexui/react", role: "Product UI", usage: "Shells, forms, charts, data", status: <Badge tone="success">Live</Badge> },
-  { package: "@apexui/tokens", role: "Theme source", usage: "Gilded light and dark", status: <Badge tone="success">Active</Badge> },
-  { package: "GitHub Pages", role: "Proof", usage: "Public demo deployment", status: <Badge tone="info">Deployed</Badge> }
+const workOrderRows: WorkOrderRow[] = [
+  { crew: "Crew A", region: "North Loop", priority: <Badge tone="warning">High</Badge>, status: <Badge tone="info">Scheduled</Badge> },
+  { crew: "Crew B", region: "Lakeview", priority: <Badge tone="success">Normal</Badge>, status: <Badge tone="success">On route</Badge> },
+  { crew: "Crew C", region: "West Yard", priority: <Badge tone="danger">Critical</Badge>, status: <Badge tone="warning">Needs parts</Badge> }
 ];
 
 const customerColumns: Array<{ key: keyof CustomerRow; header: string }> = [
-  { key: "team", header: "Team" },
-  { key: "stack", header: "Stack" },
-  { key: "outcome", header: "Outcome" }
+  { key: "account", header: "Account" },
+  { key: "plan", header: "Plan" },
+  { key: "nextVisit", header: "Next visit" },
+  { key: "health", header: "Health" }
 ];
 
 const customerRows: CustomerRow[] = [
-  { team: "Acme Design Ops", stack: "React + tokens", outcome: "One launch surface across web apps" },
-  { team: "Northstar Platform", stack: "React + web components", outcome: "Shared workflows without a rewrite" },
-  { team: "Ledger Product", stack: "React + i18n", outcome: "Theme and locale checks before release" }
+  { account: "Aster Foods", plan: "Preventive", nextVisit: "Jun 18", health: <Badge tone="success">Stable</Badge> },
+  { account: "Briar Commons", plan: "Priority", nextVisit: "Jun 19", health: <Badge tone="warning">Watch</Badge> },
+  { account: "Cobalt Labs", plan: "Enterprise", nextVisit: "Jun 20", health: <Badge tone="info">Expanding</Badge> },
+  { account: "Dover Hotel Group", plan: "Preventive", nextVisit: "Jun 21", health: <Badge tone="success">Stable</Badge> }
 ];
 
 const boardColumns = [
   {
-    id: "intake",
-    title: "Intake",
+    id: "triage",
+    title: "Triage",
     items: [
-      { id: "brief", title: "Capture launch brief", meta: "SearchForm, TextInput" },
-      { id: "theme", title: "Pick theme mode", meta: "Switch, ToggleGroup" }
+      { id: "hvac", title: "HVAC vibration alert", meta: "Aster Foods" },
+      { id: "cooler", title: "Cooler pressure drop", meta: "Briar Commons" }
     ]
   },
   {
-    id: "build",
-    title: "Build",
+    id: "scheduled",
+    title: "Scheduled",
     items: [
-      { id: "layout", title: "Compose product shell", meta: "AppBar, Sidebar, Grid" },
-      { id: "data", title: "Wire evidence", meta: "Chart, DataTable" }
+      { id: "generator", title: "Generator load test", meta: "Crew A" },
+      { id: "controls", title: "Controls calibration", meta: "Crew B" }
     ]
   },
   {
-    id: "ship",
-    title: "Ship",
+    id: "complete",
+    title: "Complete",
     items: [
-      { id: "qa", title: "Verify accessibility", meta: "Progress, Alert" },
-      { id: "docs", title: "Publish package notes", meta: "Timeline, EmptyState" }
+      { id: "filter", title: "Filter bank replacement", meta: "Signed" },
+      { id: "sensor", title: "Sensor swap", meta: "Closed" }
     ]
   }
 ];
@@ -120,337 +140,88 @@ const calendarDays = Array.from({ length: 35 }, (_, index) => {
     label: day > 0 && day < 31 ? String(day) : "",
     muted: day <= 0 || day >= 31,
     selected: day === 18,
-    badge: day === 7 ? "QA" : day === 18 ? "Ship" : day === 24 ? "Docs" : undefined
+    badge: day === 6 ? "QA" : day === 18 ? "Route" : day === 27 ? "Close" : undefined
   };
 });
 
-const implementationSteps = [
-  { id: "install", label: "Install", description: "Add @apexui/react and @apexui/tokens." },
-  { id: "theme", label: "Theme", description: "Scope data-apex-theme at the app shell." },
-  { id: "compose", label: "Compose", description: "Use atoms and molecules to build the page." },
-  { id: "ship", label: "Ship", description: "Deploy and dogfood the package API." }
+const proofSteps = [
+  { id: "install", label: "Install", description: "React imports @apexui/react and @apexui/tokens." },
+  { id: "theme", label: "Theme", description: "The route shell controls data-apex-theme for light and dark." },
+  { id: "route", label: "Route", description: "Each business page is reachable by hash route." },
+  { id: "ship", label: "Ship", description: "GitHub Pages deploys the real demo surface." }
 ];
 
+function getRouteFromHash(): RouteId {
+  const value = window.location.hash.replace(/^#\/?/, "");
+  return routes.some((route) => route.id === value) ? (value as RouteId) : "home";
+}
+
 function App() {
+  const [route, setRoute] = React.useState<RouteId>(() => getRouteFromHash());
   const [mode, setMode] = React.useState<"light" | "dark">("light");
-  const [activeView, setActiveView] = React.useState("launch");
-  const [activeNav, setActiveNav] = React.useState("overview");
-  const [quality, setQuality] = React.useState(91);
-  const [tone, setTone] = React.useState("balanced");
-  const [packageName, setPackageName] = React.useState("@apexui/react");
   const [toastOpen, setToastOpen] = React.useState(true);
   const theme = `gilded-${mode}`;
+  const activeRoute = routes.find((item) => item.id === route) ?? routes[0];
+
+  React.useEffect(() => {
+    const syncRoute = () => setRoute(getRouteFromHash());
+    window.addEventListener("hashchange", syncRoute);
+    return () => window.removeEventListener("hashchange", syncRoute);
+  }, []);
 
   React.useEffect(() => {
     document.documentElement.dataset.apexTheme = theme;
-
     return () => {
       delete document.documentElement.dataset.apexTheme;
     };
   }, [theme]);
 
-  const handleSidebarSelect = (value: string | React.SyntheticEvent<HTMLElement>) => {
-    if (typeof value === "string") {
-      setActiveNav(value);
-    }
+  const navigate = (nextRoute: RouteId) => {
+    window.location.hash = nextRoute === "home" ? "#/" : `#/${nextRoute}`;
+    setRoute(nextRoute);
   };
 
   return (
     <main className="site-shell" data-apex-theme={theme}>
       <AppBar
-        title="ApexUI"
-        navigation={<Breadcrumbs items={[{ label: "Demos", href: "#" }, { label: "React", current: true }]} />}
+        title="Northstar Field Services"
+        navigation={<Breadcrumbs items={[{ label: "React demo", href: "#/" }, { label: activeRoute.label, current: true }]} />}
         actions={
           <Stack direction="row" gap="sm" align="center" className="site-actions">
-            <Button variant="secondary" size="sm">Docs</Button>
-            <Button size="sm">Start build</Button>
-            <Switch label="Dark" checked={mode === "dark"} onChange={() => setMode((value) => (value === "light" ? "dark" : "light"))} />
+            <Button variant="secondary" size="sm" onClick={() => navigate("proof")}>Package proof</Button>
+            <Button size="sm" onClick={() => navigate("work-orders")}>Create order</Button>
+            <Switch label="Dark" checked={mode === "dark"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
           </Stack>
         }
       />
 
-      <section className="site-hero">
-        <Container size="lg">
-          <div className="hero-grid">
-            <Stack gap="lg" className="hero-copy">
-              <Stack gap="sm">
-                <Badge tone="success" className="site-kicker">React package in practice</Badge>
-                <Typography as="h1" variant="display" className="hero-title">
-                  Ship a release cockpit with ApexUI React.
-                </Typography>
-                <Typography variant="subtitle" className="hero-subtitle">
-                  A complete product site with launch planning, theme QA, data review, forms, and package evidence, all composed from ApexUI components.
-                </Typography>
-              </Stack>
-
-              <Stack direction="row" gap="sm" align="center" className="site-actions">
-                <Button>Plan a release</Button>
-                <Button variant="secondary">View package proof</Button>
-                <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">npm package</Link>
-              </Stack>
-
-              <Paper as="div" elevation="sm" className="proof-strip">
-                <div className="proof-item">
-                  <Typography variant="title">42+</Typography>
-                  <Typography variant="caption">React exports used for real composition</Typography>
-                </div>
-                <div className="proof-item">
-                  <Typography variant="title">2 modes</Typography>
-                  <Typography variant="caption">Gilded light and dark are scoped on the shell.</Typography>
-                </div>
-                <div className="proof-item">
-                  <Typography variant="title">0 add-ons</Typography>
-                  <Typography variant="caption">No external UI library or restyled ApexUI controls.</Typography>
-                </div>
-              </Paper>
-            </Stack>
-
-            <Paper elevation="md" className="product-scene">
-              <div className="scene-header">
-                <Stack gap="sm">
-                  <Badge tone="info" className="site-kicker">Live workspace</Badge>
-                  <Typography variant="title">Launch room</Typography>
-                </Stack>
-                <div className="site-actions">
-                  <ButtonGroup label="Theme mode">
-                    <Button size="sm" variant={mode === "light" ? "primary" : "secondary"} onClick={() => setMode("light")}>Light</Button>
-                    <Button size="sm" variant={mode === "dark" ? "primary" : "secondary"} onClick={() => setMode("dark")}>Dark</Button>
-                  </ButtonGroup>
-                </div>
-              </div>
-              <Stack gap="md">
-                <SearchForm label="Find package work" placeholder="Search component, owner, release" onSubmit={() => undefined} />
-                <Chart
-                  label="Release health"
-                  data={[
-                    { label: "Theme", value: 96 },
-                    { label: "Forms", value: 88 },
-                    { label: "Data", value: 91 },
-                    { label: "Docs", value: 83 }
-                  ]}
-                />
-                <div className="scene-summary" aria-label="Release summary">
-                  <div>
-                    <Typography variant="caption">Readiness</Typography>
-                    <Typography variant="title">91%</Typography>
-                  </div>
-                  <div>
-                    <Typography variant="caption">Theme scope</Typography>
-                    <Typography variant="title">{theme}</Typography>
-                  </div>
-                  <div>
-                    <Typography variant="caption">Package</Typography>
-                    <Typography variant="title">Live</Typography>
-                  </div>
-                </div>
-                <Timeline
-                  events={[
-                    { id: "install", label: "Install package", description: "React and token CSS loaded from npm.", meta: "Done" },
-                    { id: "compose", label: "Compose page", description: "Website and app workspace share ApexUI controls.", meta: "Now" },
-                    { id: "deploy", label: "Deploy proof", description: "GitHub Pages publishes the working surface.", meta: "Next" }
-                  ]}
-                />
-              </Stack>
-            </Paper>
-          </div>
-        </Container>
-      </section>
-
-      <Container size="lg" className="site-main">
-        <section className="section-stack">
-          <div className="section-heading">
-            <Stack gap="sm">
-              <Badge tone="info" className="site-kicker">Why teams use it</Badge>
-              <Typography as="h2" variant="title">A product surface, not a preview grid.</Typography>
-            </Stack>
-            <Typography variant="body">
-              The public story and the operating workspace share the same tokens, forms, data, and navigation.
-            </Typography>
-          </div>
-
-          <div className="value-layout">
-            <Paper elevation="sm" className="value-statement">
-              <Stack gap="md">
-                <Badge tone="info" className="site-kicker">System proof</Badge>
-                <Typography variant="title">One page has to prove the whole contract: tokens, components, routing, and workflow.</Typography>
-                <Typography variant="body">ApexUI should feel useful before a team reads docs. This React demo shows the package as a production surface with real decisions, not a catalog dressed as an app.</Typography>
-              </Stack>
-            </Paper>
-            <List
-              className="value-list"
-              items={[
-                { id: "site", label: "Website composition", description: "Hero, proof band, customer evidence, and implementation path use ApexUI primitives.", meta: <Badge tone="success">Visible</Badge> },
-                { id: "app", label: "Workspace composition", description: "Sidebar, toolbar, tabs, board, data table, forms, calendar, and feedback run the workflow.", meta: <Badge tone="info">Interactive</Badge> },
-                { id: "package", label: "Package dogfood", description: "Every visible control comes from @apexui/react with token CSS scoped by theme.", meta: <Badge tone="success">Registry ready</Badge> }
-              ]}
-            />
-          </div>
-        </section>
-
-        <section className="section-stack">
-          <div className="section-heading">
-            <Stack gap="sm">
-              <Badge tone="success" className="site-kicker">In practice</Badge>
-              <Typography as="h2" variant="title">ApexUI running the actual workflow.</Typography>
-            </Stack>
-            <Typography variant="body">
-              This is where the demo stops selling and starts operating: navigation, launch planning, forms, data, theme QA, and package proof.
-            </Typography>
-          </div>
-        </section>
-
-        <section className="app-demo" aria-labelledby="workspace-heading">
-          <Paper elevation="md" className="workspace-shell">
-            <div className="app-layout">
-            <Sidebar
-              activeId={activeNav}
-              heading="Workspace"
-              label="Launch sections"
-              onSelect={handleSidebarSelect}
-              items={[
-                { id: "overview", label: "Overview", icon: <Icon name="home" />, badge: <Badge tone="success">Live</Badge> },
-                { id: "packages", label: "Packages", icon: <Icon name="package" /> },
-                { id: "themes", label: "Themes", icon: <Icon name="palette" /> },
-                { id: "customers", label: "Customers", icon: <Icon name="users" /> }
-              ]}
-              footer={<Alert tone="info" title="Atomic use">Controls compose sections, sections compose this product page.</Alert>}
-            />
-
-            <Stack gap="lg" className="workspace-panel">
-              <Toolbar
-                label="Product workspace"
-                actions={
-                  <ButtonGroup label="Workspace actions">
-                    <Button size="sm">Invite reviewer</Button>
-                    <Button size="sm" variant="secondary">Export report</Button>
-                  </ButtonGroup>
-                }
-              >
-                <Badge tone="success">{theme}</Badge>
-              </Toolbar>
-
-              <Tabs
-                label="Workspace view"
-                activeId={activeView}
-                onChange={setActiveView}
-                items={[
-                  { id: "launch", label: "Launch plan" },
-                  { id: "theme", label: "Theme QA" },
-                  { id: "evidence", label: "Evidence" }
-                ]}
-              />
-
-              <div className="workspace-grid">
-                <WorkflowBoard columns={boardColumns} />
-                <Card eyebrow="Release controls" title="Configure the train">
-                  <Stack gap="md">
-                    <Autocomplete
-                      label="Package"
-                      value={packageName}
-                      onChange={(event) => setPackageName(event.currentTarget.value)}
-                      options={["@apexui/react", "@apexui/tokens", "apexui-demo-react"]}
-                    />
-                    <Select label="Theme family" value="gilded" options={[{ label: "Gilded", value: "gilded" }]} disabled />
-                    <DatePicker label="Ship date" defaultValue="2026-06-20" />
-                    <NumberField label="Release candidate" defaultValue={1} min={1} />
-                    <Textarea label="Launch note" defaultValue="React demo proves ApexUI in an end-to-end product website." />
-                  </Stack>
-                </Card>
-              </div>
-
-              <div className="workspace-grid workspace-grid-tight">
-                <Card eyebrow="Theme quality" title="Gilded mode checks">
-                  <Stack gap="md">
-                    <ToggleGroup
-                      label="Product tone"
-                      value={tone}
-                      onValueChange={setTone}
-                      options={[
-                        { label: "Focused", value: "focused" },
-                        { label: "Balanced", value: "balanced" },
-                        { label: "Rich", value: "rich" }
-                      ]}
-                    />
-                    <Progress label="Accessibility pass" value={quality} />
-                    <Slider label="Quality target" value={quality} onChange={(event) => setQuality(Number(event.currentTarget.value))} />
-                    <Rating label="Executive fit" value={4} />
-                    <Checkbox label="Publish as public package proof" defaultChecked />
-                  </Stack>
-                </Card>
-
-                <DataTable caption="Package readiness" columns={packageColumns} rows={packageRows} />
-              </div>
-            </Stack>
-            </div>
-          </Paper>
-        </section>
-
-        <section className="section-stack">
-          <div className="section-heading">
-            <Stack gap="sm">
-              <Badge tone="info" className="site-kicker">Implementation</Badge>
-              <Typography as="h2" variant="title">From install to shipped page.</Typography>
-            </Stack>
-            <Button variant="secondary">Copy install command</Button>
-          </div>
-
-          <div className="two-column">
-            <Card eyebrow="Developer path" title="Four steps to a working app">
-              <Stepper activeIndex={3} steps={implementationSteps} />
-            </Card>
-            <Card eyebrow="Launch calendar" title="Team schedule">
-              <Calendar
-                label="June launch plan"
-                monthLabel="June 2026"
-                weekdays={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
-                days={calendarDays}
-              />
-            </Card>
-          </div>
-        </section>
-
-        <section className="section-stack">
-          <div className="section-heading">
-            <Stack gap="sm">
-              <Badge tone="success" className="site-kicker">Evidence</Badge>
-              <Typography as="h2" variant="title">Proof beyond the hero.</Typography>
-            </Stack>
-            <Typography variant="body">Real data surfaces show what teams would manage after adoption.</Typography>
-          </div>
-
-          <div className="two-column two-column-wide">
-            <DataGrid caption="Customer rollout examples" columns={customerColumns} rows={customerRows} />
-            <Card eyebrow="Intake form" title="Request migration help">
-              <Stack gap="md">
-                <TextInput label="Workstream" defaultValue="React package adoption" />
-                <RadioGroup
-                  label="Timeline"
-                  name="timeline"
-                  value="this-week"
-                  options={[
-                    { label: "This week", value: "this-week" },
-                    { label: "This month", value: "this-month" }
-                  ]}
-                />
-                <FileUpload label="Attach current UI audit" description="Use screenshots or JSON reports." files={[{ name: "react-pages-smoke.txt", meta: "verified" }]} />
-                <Button>Send request</Button>
-              </Stack>
-            </Card>
-          </div>
-        </section>
-
-        <section className="section-stack">
-          <EmptyState
-            title="Ready to build a real product surface"
-            description="ApexUI React is shown here as a complete website and operating workflow, not as a preview grid."
-            action={
-              <Stack direction="row" gap="sm" align="center" className="site-actions">
-                <Button>Start with React</Button>
-                <Button variant="secondary">Compare frameworks</Button>
-              </Stack>
-            }
+      <Container size="lg" className="route-shell">
+        <div className="business-layout">
+          <Sidebar
+            activeId={route}
+            heading="Northstar"
+            label="Business routes"
+            onSelect={(value) => {
+              if (typeof value === "string") navigate(value as RouteId);
+            }}
+            items={routes.map((item) => ({
+              id: item.id,
+              label: item.label,
+              icon: item.icon,
+              badge: item.id === route ? <Badge tone="success">Open</Badge> : undefined
+            }))}
+            footer={<Alert tone="info" title="Routing proof">Every nav item changes a real React route state and URL hash.</Alert>}
           />
-        </section>
+
+          <section className="route-panel" aria-label={`${activeRoute.label} page`}>
+            {route === "home" && <HomePage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+            {route === "metrics" && <MetricsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+            {route === "work-orders" && <WorkOrdersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+            {route === "customers" && <CustomersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+            {route === "settings" && <SettingsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+            {route === "proof" && <ProofPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          </section>
+        </div>
       </Container>
 
       <Snackbar
@@ -458,9 +229,314 @@ function App() {
         tone="info"
         action={<Button size="sm" variant="secondary" onClick={() => setToastOpen(false)}>Dismiss</Button>}
       >
-        React demo rebuilt as full ApexUI product website.
+        React demo now runs as a routed business website and operations app.
       </Snackbar>
     </main>
+  );
+}
+
+function HomePage({ navigate, theme }: PageProps) {
+  return (
+    <Stack gap="lg">
+      <section className="hero-page">
+        <Stack gap="lg" className="hero-copy">
+          <Badge tone="success" className="site-kicker">Premium field operations</Badge>
+          <Typography as="h1" variant="display" className="hero-title">Commercial service teams, coordinated from first call to closeout.</Typography>
+          <Typography variant="subtitle" className="hero-subtitle">
+            Northstar Field Services keeps dispatch, preventive maintenance, customer health, and service revenue in one focused operating surface.
+          </Typography>
+          <Stack direction="row" gap="sm" align="center" className="site-actions">
+            <Button onClick={() => navigate("work-orders")}>Book a service visit</Button>
+            <Button variant="secondary" onClick={() => navigate("metrics")}>View live metrics</Button>
+            <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">ApexUI React</Link>
+          </Stack>
+        </Stack>
+
+        <Paper elevation="md" className="hero-console">
+          <Toolbar
+            label="Today at Northstar"
+            actions={<Badge tone="success">{theme}</Badge>}
+          >
+            <ButtonGroup label="Home actions">
+              <Button size="sm" onClick={() => navigate("customers")}>Accounts</Button>
+              <Button size="sm" variant="secondary" onClick={() => navigate("settings")}>Preferences</Button>
+            </ButtonGroup>
+          </Toolbar>
+          <Chart
+            label="Service mix"
+            data={[
+              { label: "Maintenance", value: 86 },
+              { label: "Emergency", value: 34 },
+              { label: "Install", value: 52 },
+              { label: "Audit", value: 69 }
+            ]}
+          />
+          <div className="metric-band">
+            <Metric label="Open orders" value="128" tone="info" />
+            <Metric label="First-time fix" value="94%" tone="success" />
+            <Metric label="At-risk sites" value="7" tone="warning" />
+          </div>
+        </Paper>
+      </section>
+
+      <section className="section-grid">
+        <Card eyebrow="Marketing page" title="Business offer">
+          <Typography variant="body">A complete public-facing pitch with product value, route proof, and package install evidence.</Typography>
+        </Card>
+        <Card eyebrow="Operations app" title="Live workflows">
+          <Typography variant="body">Dashboards, forms, tables, settings, and feedback all use ApexUI primitives in one product.</Typography>
+        </Card>
+        <Card eyebrow="Framework proof" title="React route surface">
+          <Typography variant="body">This Vite app uses hash routing so GitHub Pages can deep-link without server rewrite rules.</Typography>
+        </Card>
+      </section>
+    </Stack>
+  );
+}
+
+function MetricsPage(_props: PageProps) {
+  return (
+    <PageFrame eyebrow="Metrics" title="Regional performance dashboard" description="ApexUI charts, tables, lists, and workflow states running as an operations page.">
+      <div className="metric-band metric-band-four">
+        <Metric label="Revenue protected" value="$4.8M" tone="success" />
+        <Metric label="Open SLA risk" value="11" tone="warning" />
+        <Metric label="Truck utilization" value="87%" tone="info" />
+        <Metric label="Customer health" value="92%" tone="success" />
+      </div>
+
+      <div className="two-column">
+        <Paper elevation="sm" className="panel-stack">
+          <Typography variant="title">Dispatch health</Typography>
+          <Chart
+            label="Weekly performance"
+            data={[
+              { label: "Mon", value: 72 },
+              { label: "Tue", value: 84 },
+              { label: "Wed", value: 91 },
+              { label: "Thu", value: 78 },
+              { label: "Fri", value: 88 }
+            ]}
+          />
+          <Progress label="Preventive maintenance coverage" value={82} />
+          <Progress label="Parts availability" value={76} />
+        </Paper>
+
+        <WorkflowBoard columns={boardColumns} />
+      </div>
+
+      <DataTable caption="Open work order queue" columns={workOrderColumns} rows={workOrderRows} />
+    </PageFrame>
+  );
+}
+
+function WorkOrdersPage(_props: PageProps) {
+  const [priority, setPriority] = React.useState("scheduled");
+  const [confidence, setConfidence] = React.useState(72);
+  const [asset, setAsset] = React.useState("Rooftop unit 14");
+
+  return (
+    <PageFrame eyebrow="Work orders" title="Create a service visit" description="A realistic intake page with typed fields, route selection, urgency, attachment, and dispatch confidence.">
+      <div className="two-column">
+        <Card eyebrow="Request intake" title="Service details">
+          <Stack gap="md">
+            <TextInput label="Customer" defaultValue="Aster Foods" />
+            <Autocomplete
+              label="Asset"
+              value={asset}
+              onChange={(event) => setAsset(event.currentTarget.value)}
+              options={["Rooftop unit 14", "Cold room compressor", "Dock door sensor", "Backup generator"]}
+            />
+            <Select
+              label="Service type"
+              defaultValue="maintenance"
+              options={[
+                { label: "Preventive maintenance", value: "maintenance" },
+                { label: "Emergency repair", value: "emergency" },
+                { label: "Installation", value: "install" }
+              ]}
+            />
+            <DatePicker label="Requested date" defaultValue="2026-06-18" />
+            <Textarea label="Technician notes" defaultValue="Customer reports intermittent alarm after compressor cycle." />
+            <FileUpload label="Attach site photos" description="Upload customer images, logs, or prior inspection reports." files={[{ name: "unit-14-alarm-log.csv", meta: "ready" }]} />
+          </Stack>
+        </Card>
+
+        <Card eyebrow="Dispatch controls" title="Route plan">
+          <Stack gap="md">
+            <RadioGroup
+              label="Priority"
+              name="priority"
+              value={priority}
+              onValueChange={setPriority}
+              options={[
+                { label: "Scheduled", value: "scheduled" },
+                { label: "Same day", value: "same-day" },
+                { label: "Emergency", value: "emergency" }
+              ]}
+            />
+            <NumberField label="Crew size" defaultValue={2} min={1} max={8} />
+            <Slider label="Dispatch confidence" value={confidence} onChange={(event) => setConfidence(Number(event.currentTarget.value))} />
+            <Progress label="Dispatch confidence" value={confidence} />
+            <Checkbox label="Notify customer when crew is assigned" defaultChecked />
+            <Alert tone={priority === "emergency" ? "warning" : "info"} title="Routing note">Crew assignment updates the customer timeline and route board.</Alert>
+            <Button>Create work order</Button>
+          </Stack>
+        </Card>
+      </div>
+    </PageFrame>
+  );
+}
+
+function CustomersPage(_props: PageProps) {
+  return (
+    <PageFrame eyebrow="Customers" title="Account pipeline and health records" description="A customer operations page with searchable records, structured data, and next-best action states.">
+      <Toolbar
+        label="Account controls"
+        actions={<ButtonGroup label="Customer actions"><Button size="sm">Add account</Button><Button size="sm" variant="secondary">Export CSV</Button></ButtonGroup>}
+      >
+        <SearchForm label="Find customer" placeholder="Search account, plan, owner" onSubmit={() => undefined} />
+      </Toolbar>
+
+      <div className="two-column two-column-wide">
+        <DataGrid caption="Customer account list" columns={customerColumns} rows={customerRows} />
+        <Paper elevation="sm" className="panel-stack">
+          <Typography variant="title">Account timeline</Typography>
+          <Timeline
+            events={[
+              { id: "review", label: "Health review", description: "Briar Commons needs risk review before renewal.", meta: "Today" },
+              { id: "visit", label: "Site visit", description: "Crew B assigned to Aster Foods.", meta: "Jun 18" },
+              { id: "renew", label: "Renewal", description: "Cobalt Labs expanding enterprise support.", meta: "Jun 24" }
+            ]}
+          />
+          <EmptyState
+            title="No escalations selected"
+            description="Select a customer row to open the full account plan."
+            action={<Button variant="secondary">Open account plan</Button>}
+          />
+        </Paper>
+      </div>
+    </PageFrame>
+  );
+}
+
+function SettingsPage({ mode, setMode }: PageProps) {
+  const [tone, setTone] = React.useState("balanced");
+
+  return (
+    <PageFrame eyebrow="Settings" title="Workspace preferences" description="A settings route proving tabs, toggles, theme mode, locale-like controls, and account preferences.">
+      <Tabs
+        label="Settings sections"
+        activeId="workspace"
+        onChange={() => undefined}
+        items={[
+          { id: "workspace", label: "Workspace" },
+          { id: "notifications", label: "Notifications" },
+          { id: "billing", label: "Billing" }
+        ]}
+      />
+
+      <div className="two-column">
+        <Card eyebrow="Workspace" title="Operating defaults">
+          <Stack gap="md">
+            <TextInput label="Workspace name" defaultValue="Northstar Central" />
+            <Select
+              label="Locale"
+              defaultValue="en-US"
+              options={[
+                { label: "English (US)", value: "en-US" },
+                { label: "Spanish (US)", value: "es-US" },
+                { label: "French (CA)", value: "fr-CA" }
+              ]}
+            />
+            <ToggleGroup
+              label="Workspace tone"
+              value={tone}
+              onValueChange={setTone}
+              options={[
+                { label: "Compact", value: "compact" },
+                { label: "Balanced", value: "balanced" },
+                { label: "Guided", value: "guided" }
+              ]}
+            />
+            <Switch label="Dark mode" checked={mode === "dark"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
+            <Checkbox label="Require manager approval for emergency dispatch" defaultChecked />
+          </Stack>
+        </Card>
+
+        <Card eyebrow="Quality" title="Design-system fit">
+          <Stack gap="md">
+            <Rating label="Executive readability" value={4} />
+            <Progress label="Theme coverage" value={100} />
+            <Progress label="Route coverage" value={100} />
+            <Alert tone="success" title="Settings saved">Preferences use the same ApexUI controls as every other page.</Alert>
+          </Stack>
+        </Card>
+      </div>
+    </PageFrame>
+  );
+}
+
+function ProofPage({ theme }: PageProps) {
+  return (
+    <PageFrame eyebrow="Package proof" title="React integration details" description="The demo installs real ApexUI packages from npm and uses route-level composition instead of preview-only examples.">
+      <div className="two-column">
+        <Card eyebrow="Install path" title="@apexui/react">
+          <Stepper activeIndex={3} steps={proofSteps} />
+        </Card>
+
+        <Paper elevation="sm" className="panel-stack">
+          <Typography variant="title">What this route proves</Typography>
+          <List
+            items={[
+              { id: "routing", label: "Routing", description: "Hash routes work on GitHub Pages without rewrite config.", meta: <Badge tone="success">Live</Badge> },
+              { id: "theme", label: "Theme", description: `${theme} is applied to html and the app shell.`, meta: <Badge tone="info">Scoped</Badge> },
+              { id: "components", label: "Components", description: "Marketing, dashboard, forms, records, settings, and proof pages use ApexUI components.", meta: <Badge tone="success">Dogfood</Badge> }
+            ]}
+          />
+          <Alert tone="info" title="Registry check">This app depends on @apexui/react and @apexui/tokens from npm.</Alert>
+        </Paper>
+      </div>
+
+      <DataTable
+        caption="Route coverage"
+        columns={[
+          { key: "page", header: "Page" },
+          { key: "purpose", header: "Purpose" },
+          { key: "components", header: "ApexUI coverage" }
+        ]}
+        rows={[
+          { page: "Home", purpose: "Marketing", components: "AppBar, Sidebar, Card, Chart, Metric, Link" },
+          { page: "Metrics", purpose: "Dashboard", components: "Chart, Progress, WorkflowBoard, DataTable" },
+          { page: "Work orders", purpose: "Forms", components: "TextInput, Select, DatePicker, FileUpload, Slider" },
+          { page: "Customers", purpose: "Records", components: "SearchForm, DataGrid, Timeline, EmptyState" },
+          { page: "Settings", purpose: "Account", components: "Tabs, Switch, ToggleGroup, Rating, Alert" }
+        ]}
+      />
+    </PageFrame>
+  );
+}
+
+function PageFrame({ eyebrow, title, description, children }: { eyebrow: string; title: string; description: string; children: React.ReactNode }) {
+  return (
+    <Stack gap="lg">
+      <header className="page-heading">
+        <Stack gap="sm">
+          <Badge tone="info" className="site-kicker">{eyebrow}</Badge>
+          <Typography as="h1" variant="display" className="page-title">{title}</Typography>
+        </Stack>
+        <Typography variant="body" className="page-description">{description}</Typography>
+      </header>
+      {children}
+    </Stack>
+  );
+}
+
+function Metric({ label, value, tone }: { label: string; value: string; tone: "info" | "success" | "warning" }) {
+  return (
+    <Paper as="article" elevation="sm" className="metric-card">
+      <Badge tone={tone}>{label}</Badge>
+      <Typography variant="title">{value}</Typography>
+    </Paper>
   );
 }
 
