@@ -252,9 +252,9 @@ function SiteFooter({ navigate }: { navigate: (route: RouteId) => void }) {
 
 function HomePage({ navigate, theme }: PageProps) {
   return (
-    <Stack gap="lg">
-      <section className="hero-page">
-        <Stack gap="lg" className="hero-copy">
+    <MarketingHomeTemplate
+      hero={
+        <>
           <Typography as="h1" variant="display" className="hero-title">Field service that feels calm before the crew arrives.</Typography>
           <Typography variant="subtitle" className="hero-subtitle">
             Northstar coordinates commercial maintenance, emergency dispatch, customer approvals, and executive reporting from one operating system.
@@ -264,8 +264,9 @@ function HomePage({ navigate, theme }: PageProps) {
             <Button variant="secondary" onClick={() => navigate("metrics")}>View live metrics</Button>
             <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">ApexUI React</Link>
           </Stack>
-        </Stack>
-
+        </>
+      }
+      consolePanel={
         <Paper elevation="md" className="hero-console">
           <Toolbar
             label="Today at Northstar"
@@ -291,47 +292,51 @@ function HomePage({ navigate, theme }: PageProps) {
             <Metric label="At-risk sites" value="7" tone="warning" />
           </div>
         </Paper>
-      </section>
-
-      <section className="trust-band" aria-label="Customer proof">
-        <span>Trusted by regional facilities teams</span>
-        <strong>Aster Foods</strong>
-        <strong>Briar Commons</strong>
-        <strong>Cobalt Labs</strong>
-        <strong>Dover Hotel Group</strong>
-      </section>
-
-      <section className="service-story">
-        <div>
+      }
+      proof={
+        <>
+          <span>Trusted by regional facilities teams</span>
+          <strong>Aster Foods</strong>
+          <strong>Briar Commons</strong>
+          <strong>Cobalt Labs</strong>
+          <strong>Dover Hotel Group</strong>
+        </>
+      }
+      story={
+        <>
           <Typography as="h2" variant="title">A polished service website, not a component gallery.</Typography>
-        </div>
-        <div className="story-grid">
-          <Card eyebrow="Response" title="Book urgent work without calling dispatch">
-            <Typography variant="body">Customers can request service, upload logs, pick dates, and track status through one branded experience.</Typography>
-          </Card>
-          <Card eyebrow="Operations" title="Managers see the route plan before it breaks">
-            <Typography variant="body">Dashboards combine work orders, crew load, SLA risk, and account health in one operations surface.</Typography>
-          </Card>
-          <Card eyebrow="Proof" title="Every page exercises ApexUI in context">
-            <Typography variant="body">Marketing, metrics, forms, records, settings, and package proof share the same token system.</Typography>
-          </Card>
-        </div>
-      </section>
-    </Stack>
+          <div className="story-grid">
+            <Card eyebrow="Response" title="Book urgent work without calling dispatch">
+              <Typography variant="body">Customers can request service, upload logs, pick dates, and track status through one branded experience.</Typography>
+            </Card>
+            <Card eyebrow="Operations" title="Managers see the route plan before it breaks">
+              <Typography variant="body">Dashboards combine work orders, crew load, SLA risk, and account health in one operations surface.</Typography>
+            </Card>
+            <Card eyebrow="Proof" title="Every page exercises ApexUI in context">
+              <Typography variant="body">Marketing, metrics, forms, records, settings, and package proof share the same token system.</Typography>
+            </Card>
+          </div>
+        </>
+      }
+    />
   );
 }
 
 function MetricsPage(_props: PageProps) {
   return (
-    <PageFrame title="Operations command center" description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard.">
-      <section className="metric-band metric-band-four metric-band-compact" aria-label="Operations summary">
+    <DashboardTemplate
+      title="Operations command center"
+      description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard."
+      summary={
+        <>
         <Metric label="Revenue protected" value="$4.8M" note="+12% this quarter" tone="success" />
         <Metric label="Open SLA risk" value="11" note="3 need dispatch today" tone="warning" />
         <Metric label="Utilization" value="87%" note="North region leads" tone="info" />
         <Metric label="Health" value="92%" note="4 accounts improving" tone="success" />
-      </section>
-
-      <section className="dashboard-visual-grid">
+        </>
+      }
+      visualGrid={
+        <>
         <Paper elevation="sm" className="panel-stack dispatch-panel">
           <div className="panel-heading">
             <div>
@@ -408,10 +413,9 @@ function MetricsPage(_props: PageProps) {
             ]}
           />
         </Paper>
-      </section>
-
-      <section className="dashboard-shell">
-        <div className="dashboard-main">
+        </>
+      }
+      mainPanel={
           <Paper elevation="sm" className="panel-stack">
             <div className="panel-heading">
               <div>
@@ -430,9 +434,8 @@ function MetricsPage(_props: PageProps) {
               ]}
             />
           </Paper>
-        </div>
-
-        <aside className="dashboard-side">
+      }
+      sidePanel={
           <Paper elevation="sm" className="territory-panel panel-stack">
             <div className="panel-heading">
               <div>
@@ -449,13 +452,10 @@ function MetricsPage(_props: PageProps) {
               ]}
             />
           </Paper>
-        </aside>
-      </section>
-
-      <WorkflowBoard columns={boardColumns} />
-
-      <DataTable caption="Open work order queue" columns={workOrderColumns} rows={workOrderRows} />
-    </PageFrame>
+      }
+      workflow={<WorkflowBoard columns={boardColumns} />}
+      queue={<DataTable caption="Open work order queue" columns={workOrderColumns} rows={workOrderRows} />}
+    />
   );
 }
 
@@ -465,8 +465,10 @@ function WorkOrdersPage(_props: PageProps) {
   const [asset, setAsset] = React.useState("Rooftop unit 14");
 
   return (
-    <PageFrame title="Create a service visit" description="A realistic intake page with typed fields, route selection, urgency, attachment, and dispatch confidence.">
-      <div className="two-column">
+    <FormPageTemplate
+      title="Create a service visit"
+      description="A realistic intake page with typed fields, route selection, urgency, attachment, and dispatch confidence."
+      primary={
         <Card eyebrow="Request intake" title="Service details">
           <Stack gap="md">
             <TextInput label="Customer" defaultValue="Aster Foods" />
@@ -490,7 +492,8 @@ function WorkOrdersPage(_props: PageProps) {
             <FileUpload label="Attach site photos" description="Upload customer images, logs, or prior inspection reports." files={[{ name: "unit-14-alarm-log.csv", meta: "ready" }]} />
           </Stack>
         </Card>
-
+      }
+      secondary={
         <Card eyebrow="Dispatch controls" title="Route plan">
           <Stack gap="md">
             <RadioGroup
@@ -511,26 +514,27 @@ function WorkOrdersPage(_props: PageProps) {
             <Button>Create work order</Button>
           </Stack>
         </Card>
-      </div>
-    </PageFrame>
+      }
+    />
   );
 }
 
 function CustomersPage(_props: PageProps) {
   return (
-    <PageFrame title="Account pipeline and health records" description="A customer operations page with searchable records, structured data, and next-best action states.">
+    <RecordsPageTemplate
+      title="Account pipeline and health records"
+      description="A customer operations page with searchable records, structured data, and next-best action states."
+      controls={
       <Toolbar
         label="Account controls"
         actions={<ButtonGroup label="Customer actions"><Button size="sm">Add account</Button><Button size="sm" variant="secondary">Export CSV</Button></ButtonGroup>}
       >
         <SearchForm className="customer-search" label="Find customer" placeholder="Search account, plan, owner" onSubmit={() => undefined} />
       </Toolbar>
-
-      <section className="customer-records" aria-label="Customer account records">
-        <DataGrid caption="Customer account list" columns={customerColumns} rows={customerRows} />
-      </section>
-
-      <section className="customer-insight-grid" aria-label="Customer account insights">
+      }
+      records={<DataGrid caption="Customer account list" columns={customerColumns} rows={customerRows} />}
+      insights={
+        <>
         <Paper elevation="sm" className="panel-stack">
           <Typography variant="title">Account timeline</Typography>
           <Timeline
@@ -568,8 +572,9 @@ function CustomersPage(_props: PageProps) {
             action={<Button variant="secondary">Review customer plan</Button>}
           />
         </Paper>
-      </section>
-    </PageFrame>
+        </>
+      }
+    />
   );
 }
 
@@ -577,19 +582,22 @@ function SettingsPage({ mode, setMode }: PageProps) {
   const [tone, setTone] = React.useState("balanced");
 
   return (
-    <PageFrame title="Workspace preferences" description="A settings route proving tabs, toggles, theme mode, locale-like controls, and account preferences.">
-      <Tabs
-        label="Settings sections"
-        activeId="workspace"
-        onChange={() => undefined}
-        items={[
-          { id: "workspace", label: "Workspace" },
-          { id: "notifications", label: "Notifications" },
-          { id: "billing", label: "Billing" }
-        ]}
-      />
-
-      <div className="two-column">
+    <SettingsTemplate
+      title="Workspace preferences"
+      description="A settings route proving tabs, toggles, theme mode, locale-like controls, and account preferences."
+      tabs={
+        <Tabs
+          label="Settings sections"
+          activeId="workspace"
+          onChange={() => undefined}
+          items={[
+            { id: "workspace", label: "Workspace" },
+            { id: "notifications", label: "Notifications" },
+            { id: "billing", label: "Billing" }
+          ]}
+        />
+      }
+      preferences={
         <Card eyebrow="Workspace" title="Operating defaults">
           <Stack gap="md">
             <TextInput label="Workspace name" defaultValue="Northstar Central" />
@@ -616,7 +624,8 @@ function SettingsPage({ mode, setMode }: PageProps) {
             <Checkbox label="Require manager approval for emergency dispatch" defaultChecked />
           </Stack>
         </Card>
-
+      }
+      quality={
         <Card eyebrow="Quality" title="Design-system fit">
           <Stack gap="md">
             <Rating label="Executive readability" value={4} />
@@ -625,19 +634,22 @@ function SettingsPage({ mode, setMode }: PageProps) {
             <Alert tone="success" title="Settings saved">Preferences use the same ApexUI controls as every other page.</Alert>
           </Stack>
         </Card>
-      </div>
-    </PageFrame>
+      }
+    />
   );
 }
 
 function ProofPage({ theme }: PageProps) {
   return (
-    <PageFrame title="React integration details" description="The demo installs real ApexUI packages from npm and uses route-level composition instead of preview-only examples.">
-      <div className="two-column">
+    <ProofTemplate
+      title="React integration details"
+      description="The demo installs real ApexUI packages from npm and uses route-level composition instead of preview-only examples."
+      install={
         <Card eyebrow="Install path" title="@apexui/react">
           <Stepper activeIndex={3} steps={proofSteps} />
         </Card>
-
+      }
+      evidence={
         <Paper elevation="sm" className="panel-stack">
           <Typography variant="title">What this route proves</Typography>
           <List
@@ -649,28 +661,37 @@ function ProofPage({ theme }: PageProps) {
           />
           <Alert tone="info" title="Registry check">This app depends on @apexui/react and @apexui/tokens from npm.</Alert>
         </Paper>
-      </div>
-
-      <DataTable
-        caption="Route coverage"
-        columns={[
-          { key: "page", header: "Page" },
-          { key: "purpose", header: "Purpose" },
-          { key: "components", header: "ApexUI coverage" }
-        ]}
-        rows={[
-          { page: "Home", purpose: "Marketing", components: "Header, navigation, Card, Chart, Metric, Link" },
-          { page: "Metrics", purpose: "Dashboard", components: "Chart, Progress, WorkflowBoard, DataTable" },
-          { page: "Work orders", purpose: "Forms", components: "TextInput, Select, DatePicker, FileUpload, Slider" },
-          { page: "Customers", purpose: "Records", components: "SearchForm, DataGrid, Timeline, EmptyState" },
-          { page: "Settings", purpose: "Account", components: "Tabs, Switch, ToggleGroup, Rating, Alert" }
-        ]}
-      />
-    </PageFrame>
+      }
+      coverage={
+        <DataTable
+          caption="Route coverage"
+          columns={[
+            { key: "page", header: "Page" },
+            { key: "purpose", header: "Purpose" },
+            { key: "template", header: "Template" },
+            { key: "components", header: "ApexUI coverage" }
+          ]}
+          rows={[
+            { page: "Home", purpose: "Marketing", template: "MarketingHomeTemplate", components: "Header, navigation, Card, Chart, Metric, Link" },
+            { page: "Metrics", purpose: "Dashboard", template: "DashboardTemplate", components: "Chart, WorkflowBoard, DataTable" },
+            { page: "Work orders", purpose: "Forms", template: "FormPageTemplate", components: "TextInput, Select, DatePicker, FileUpload, Slider" },
+            { page: "Customers", purpose: "Records", template: "RecordsPageTemplate", components: "SearchForm, DataGrid, Timeline, EmptyState" },
+            { page: "Settings", purpose: "Account", template: "SettingsTemplate", components: "Tabs, Switch, ToggleGroup, Rating, Alert" },
+            { page: "Proof", purpose: "Integration", template: "ProofTemplate", components: "Stepper, List, Alert, DataTable" }
+          ]}
+        />
+      }
+    />
   );
 }
 
-function PageFrame({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
+type PageTemplateProps = {
+  title: string;
+  description: string;
+  children: React.ReactNode;
+};
+
+function PageTemplate({ title, description, children }: PageTemplateProps) {
   return (
     <Stack gap="lg">
       <header className="page-heading">
@@ -679,6 +700,104 @@ function PageFrame({ title, description, children }: { title: string; descriptio
       </header>
       {children}
     </Stack>
+  );
+}
+
+function MarketingHomeTemplate({ hero, consolePanel, proof, story }: { hero: React.ReactNode; consolePanel: React.ReactNode; proof: React.ReactNode; story: React.ReactNode }) {
+  return (
+    <Stack gap="lg">
+      <section className="hero-page">
+        <Stack gap="lg" className="hero-copy">
+          {hero}
+        </Stack>
+        {consolePanel}
+      </section>
+
+      <section className="trust-band" aria-label="Customer proof">
+        {proof}
+      </section>
+
+      <section className="service-story">
+        {story}
+      </section>
+    </Stack>
+  );
+}
+
+function DashboardTemplate({ title, description, summary, visualGrid, mainPanel, sidePanel, workflow, queue }: { title: string; description: string; summary: React.ReactNode; visualGrid: React.ReactNode; mainPanel: React.ReactNode; sidePanel: React.ReactNode; workflow: React.ReactNode; queue: React.ReactNode }) {
+  return (
+    <PageTemplate title={title} description={description}>
+      <section className="metric-band metric-band-four metric-band-compact" aria-label="Operations summary">
+        {summary}
+      </section>
+
+      <section className="dashboard-visual-grid">
+        {visualGrid}
+      </section>
+
+      <section className="dashboard-shell">
+        <div className="dashboard-main">
+          {mainPanel}
+        </div>
+        <aside className="dashboard-side">
+          {sidePanel}
+        </aside>
+      </section>
+
+      {workflow}
+      {queue}
+    </PageTemplate>
+  );
+}
+
+function FormPageTemplate({ title, description, primary, secondary }: { title: string; description: string; primary: React.ReactNode; secondary: React.ReactNode }) {
+  return (
+    <PageTemplate title={title} description={description}>
+      <div className="two-column">
+        {primary}
+        {secondary}
+      </div>
+    </PageTemplate>
+  );
+}
+
+function RecordsPageTemplate({ title, description, controls, records, insights }: { title: string; description: string; controls: React.ReactNode; records: React.ReactNode; insights: React.ReactNode }) {
+  return (
+    <PageTemplate title={title} description={description}>
+      {controls}
+
+      <section className="customer-records" aria-label="Customer account records">
+        {records}
+      </section>
+
+      <section className="customer-insight-grid" aria-label="Customer account insights">
+        {insights}
+      </section>
+    </PageTemplate>
+  );
+}
+
+function SettingsTemplate({ title, description, tabs, preferences, quality }: { title: string; description: string; tabs: React.ReactNode; preferences: React.ReactNode; quality: React.ReactNode }) {
+  return (
+    <PageTemplate title={title} description={description}>
+      {tabs}
+      <div className="two-column">
+        {preferences}
+        {quality}
+      </div>
+    </PageTemplate>
+  );
+}
+
+function ProofTemplate({ title, description, install, evidence, coverage }: { title: string; description: string; install: React.ReactNode; evidence: React.ReactNode; coverage: React.ReactNode }) {
+  return (
+    <PageTemplate title={title} description={description}>
+      <div className="two-column">
+        {install}
+        {evidence}
+      </div>
+      {coverage}
+    </PageTemplate>
   );
 }
 
