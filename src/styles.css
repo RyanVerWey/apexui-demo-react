@@ -22,6 +22,8 @@ textarea {
 }
 
 .site-shell {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
   background:
     radial-gradient(circle at 74% 8%, color-mix(in srgb, var(--apex-color-accent) 10%, transparent), transparent 24rem),
@@ -119,6 +121,8 @@ textarea {
 }
 
 .route-shell {
+  width: 100%;
+  flex: 1 0 auto;
   padding: clamp(var(--apex-space-5), 5vw, var(--apex-space-8)) var(--apex-space-6);
 }
 
@@ -344,9 +348,11 @@ textarea {
 
 .site-footer {
   display: flex;
+  flex-shrink: 0;
   gap: var(--apex-space-5);
   align-items: center;
   justify-content: space-between;
+  margin-top: auto;
   padding: var(--apex-space-6) clamp(var(--apex-space-4), 5vw, var(--apex-space-8));
   border-top: 1px solid var(--apex-color-border);
   background: color-mix(in srgb, var(--apex-color-surface) 76%, var(--apex-color-canvas));
