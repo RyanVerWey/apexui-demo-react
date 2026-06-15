@@ -4,10 +4,8 @@ import "@apexui/tokens/css";
 import "@apexui/react/styles.css";
 import {
   Alert,
-  AppBar,
   Autocomplete,
   Badge,
-  Breadcrumbs,
   Button,
   ButtonGroup,
   Calendar,
@@ -30,9 +28,7 @@ import {
   Rating,
   SearchForm,
   Select,
-  Sidebar,
   Slider,
-  Snackbar,
   Stack,
   Stepper,
   Switch,
@@ -159,7 +155,6 @@ function getRouteFromHash(): RouteId {
 function App() {
   const [route, setRoute] = React.useState<RouteId>(() => getRouteFromHash());
   const [mode, setMode] = React.useState<"light" | "dark">("light");
-  const [toastOpen, setToastOpen] = React.useState(true);
   const theme = `gilded-${mode}`;
   const activeRoute = routes.find((item) => item.id === route) ?? routes[0];
 
@@ -183,55 +178,100 @@ function App() {
 
   return (
     <main className="site-shell" data-apex-theme={theme}>
-      <AppBar
-        title="Northstar Field Services"
-        navigation={<Breadcrumbs items={[{ label: "React demo", href: "#/" }, { label: activeRoute.label, current: true }]} />}
-        actions={
-          <Stack direction="row" gap="sm" align="center" className="site-actions">
-            <Button variant="secondary" size="sm" onClick={() => navigate("proof")}>Package proof</Button>
-            <Button size="sm" onClick={() => navigate("work-orders")}>Create order</Button>
-            <Switch label="Dark" checked={mode === "dark"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
-          </Stack>
-        }
-      />
+      <SiteHeader route={route} navigate={navigate} mode={mode} setMode={setMode} />
 
       <Container size="lg" className="route-shell">
-        <div className="business-layout">
-          <Sidebar
-            activeId={route}
-            heading="Northstar"
-            label="Business routes"
-            onSelect={(value) => {
-              if (typeof value === "string") navigate(value as RouteId);
-            }}
-            items={routes.map((item) => ({
-              id: item.id,
-              label: item.label,
-              icon: item.icon,
-              badge: item.id === route ? <Badge tone="success">Open</Badge> : undefined
-            }))}
-            footer={<Alert tone="info" title="Routing proof">Every nav item changes a real React route state and URL hash.</Alert>}
-          />
-
-          <section className="route-panel" aria-label={`${activeRoute.label} page`}>
-            {route === "home" && <HomePage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
-            {route === "metrics" && <MetricsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
-            {route === "work-orders" && <WorkOrdersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
-            {route === "customers" && <CustomersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
-            {route === "settings" && <SettingsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
-            {route === "proof" && <ProofPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
-          </section>
-        </div>
+        <section className="route-panel" aria-label={`${activeRoute.label} page`}>
+          {route !== "home" && <RouteBar route={route} navigate={navigate} />}
+          {route === "home" && <HomePage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          {route === "metrics" && <MetricsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          {route === "work-orders" && <WorkOrdersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          {route === "customers" && <CustomersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          {route === "settings" && <SettingsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          {route === "proof" && <ProofPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+        </section>
       </Container>
 
-      <Snackbar
-        open={toastOpen}
-        tone="info"
-        action={<Button size="sm" variant="secondary" onClick={() => setToastOpen(false)}>Dismiss</Button>}
-      >
-        React demo now runs as a routed business website and operations app.
-      </Snackbar>
+      <SiteFooter navigate={navigate} />
+
     </main>
+  );
+}
+
+function SiteHeader({ route, navigate, mode, setMode }: { route: RouteId; navigate: (route: RouteId) => void; mode: "light" | "dark"; setMode: (mode: "light" | "dark") => void }) {
+  return (
+    <header className="site-header">
+      <a className="brand-lockup" href="#/" onClick={(event) => { event.preventDefault(); navigate("home"); }} aria-label="Northstar Field Services home">
+        <span className="brand-mark"><Icon name="navigation" /></span>
+        <span>
+          <strong>Northstar</strong>
+          <small>Field Services</small>
+        </span>
+      </a>
+
+      <nav className="primary-nav" aria-label="Primary navigation">
+        {routes.map((item) => (
+          <a
+            aria-current={route === item.id ? "page" : undefined}
+            className={route === item.id ? "nav-link nav-link-active" : "nav-link"}
+            href={item.id === "home" ? "#/" : `#/${item.id}`}
+            key={item.id}
+            onClick={(event) => {
+              event.preventDefault();
+              navigate(item.id);
+            }}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <Stack direction="row" gap="sm" align="center" className="header-actions">
+        <Button variant="secondary" size="sm" onClick={() => navigate("customers")}>Customer portal</Button>
+        <Button size="sm" onClick={() => navigate("work-orders")}>Book service</Button>
+        <Switch label="Dark" checked={mode === "dark"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
+      </Stack>
+    </header>
+  );
+}
+
+function RouteBar({ route, navigate }: { route: RouteId; navigate: (route: RouteId) => void }) {
+  return (
+    <nav className="route-bar" aria-label="Operations navigation">
+      <div>
+        <Badge tone="info">React route</Badge>
+        <Typography variant="caption">Northstar Field Services</Typography>
+      </div>
+      <div className="route-bar-links">
+        {routes.filter((item) => item.id !== "home").map((item) => (
+          <button
+            className={route === item.id ? "route-pill route-pill-active" : "route-pill"}
+            key={item.id}
+            onClick={() => navigate(item.id)}
+            type="button"
+          >
+            {item.icon}
+            <span>{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
+function SiteFooter({ navigate }: { navigate: (route: RouteId) => void }) {
+  return (
+    <footer className="site-footer">
+      <div>
+        <strong>Northstar Field Services</strong>
+        <Typography variant="caption">React demo built entirely with ApexUI tokens and components.</Typography>
+      </div>
+      <nav aria-label="Footer navigation">
+        <button type="button" onClick={() => navigate("metrics")}>Operations</button>
+        <button type="button" onClick={() => navigate("work-orders")}>Service request</button>
+        <button type="button" onClick={() => navigate("proof")}>Package proof</button>
+      </nav>
+    </footer>
   );
 }
 
@@ -241,9 +281,9 @@ function HomePage({ navigate, theme }: PageProps) {
       <section className="hero-page">
         <Stack gap="lg" className="hero-copy">
           <Badge tone="success" className="site-kicker">Premium field operations</Badge>
-          <Typography as="h1" variant="display" className="hero-title">Commercial service teams, coordinated from first call to closeout.</Typography>
+          <Typography as="h1" variant="display" className="hero-title">Field service that feels calm before the crew arrives.</Typography>
           <Typography variant="subtitle" className="hero-subtitle">
-            Northstar Field Services keeps dispatch, preventive maintenance, customer health, and service revenue in one focused operating surface.
+            Northstar coordinates commercial maintenance, emergency dispatch, customer approvals, and executive reporting from one operating system.
           </Typography>
           <Stack direction="row" gap="sm" align="center" className="site-actions">
             <Button onClick={() => navigate("work-orders")}>Book a service visit</Button>
@@ -279,16 +319,30 @@ function HomePage({ navigate, theme }: PageProps) {
         </Paper>
       </section>
 
-      <section className="section-grid">
-        <Card eyebrow="Marketing page" title="Business offer">
-          <Typography variant="body">A complete public-facing pitch with product value, route proof, and package install evidence.</Typography>
-        </Card>
-        <Card eyebrow="Operations app" title="Live workflows">
-          <Typography variant="body">Dashboards, forms, tables, settings, and feedback all use ApexUI primitives in one product.</Typography>
-        </Card>
-        <Card eyebrow="Framework proof" title="React route surface">
-          <Typography variant="body">This Vite app uses hash routing so GitHub Pages can deep-link without server rewrite rules.</Typography>
-        </Card>
+      <section className="trust-band" aria-label="Customer proof">
+        <span>Trusted by regional facilities teams</span>
+        <strong>Aster Foods</strong>
+        <strong>Briar Commons</strong>
+        <strong>Cobalt Labs</strong>
+        <strong>Dover Hotel Group</strong>
+      </section>
+
+      <section className="service-story">
+        <div>
+          <Badge tone="info">What customers see</Badge>
+          <Typography as="h2" variant="title">A polished service website, not a component gallery.</Typography>
+        </div>
+        <div className="story-grid">
+          <Card eyebrow="Response" title="Book urgent work without calling dispatch">
+            <Typography variant="body">Customers can request service, upload logs, pick dates, and track status through one branded experience.</Typography>
+          </Card>
+          <Card eyebrow="Operations" title="Managers see the route plan before it breaks">
+            <Typography variant="body">Dashboards combine work orders, crew load, SLA risk, and account health in one operations surface.</Typography>
+          </Card>
+          <Card eyebrow="Proof" title="Every page exercises ApexUI in context">
+            <Typography variant="body">Marketing, metrics, forms, records, settings, and package proof share the same token system.</Typography>
+          </Card>
+        </div>
       </section>
     </Stack>
   );
@@ -296,17 +350,21 @@ function HomePage({ navigate, theme }: PageProps) {
 
 function MetricsPage(_props: PageProps) {
   return (
-    <PageFrame eyebrow="Metrics" title="Regional performance dashboard" description="ApexUI charts, tables, lists, and workflow states running as an operations page.">
-      <div className="metric-band metric-band-four">
-        <Metric label="Revenue protected" value="$4.8M" tone="success" />
-        <Metric label="Open SLA risk" value="11" tone="warning" />
-        <Metric label="Truck utilization" value="87%" tone="info" />
-        <Metric label="Customer health" value="92%" tone="success" />
-      </div>
+    <PageFrame eyebrow="Metrics" title="Operations command center" description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard.">
+      <section className="dashboard-shell">
+        <div className="dashboard-main">
+          <div className="metric-band metric-band-four">
+            <Metric label="Revenue protected" value="$4.8M" tone="success" />
+            <Metric label="Open SLA risk" value="11" tone="warning" />
+            <Metric label="Utilization" value="87%" tone="info" />
+            <Metric label="Health" value="92%" tone="success" />
+          </div>
 
-      <div className="two-column">
-        <Paper elevation="sm" className="panel-stack">
-          <Typography variant="title">Dispatch health</Typography>
+          <Paper elevation="sm" className="panel-stack dispatch-panel">
+            <div className="panel-heading">
+              <Typography variant="title">Dispatch health</Typography>
+              <Badge tone="success">Live</Badge>
+            </div>
           <Chart
             label="Weekly performance"
             data={[
@@ -319,10 +377,34 @@ function MetricsPage(_props: PageProps) {
           />
           <Progress label="Preventive maintenance coverage" value={82} />
           <Progress label="Parts availability" value={76} />
-        </Paper>
+          </Paper>
+        </div>
 
-        <WorkflowBoard columns={boardColumns} />
-      </div>
+        <aside className="dashboard-side">
+          <Paper elevation="sm" className="territory-panel">
+            <div className="panel-heading">
+              <Typography variant="title">Route map</Typography>
+              <Badge tone="warning">7 risks</Badge>
+            </div>
+            <div className="map-visual" aria-hidden="true">
+              <span className="map-node map-node-a" />
+              <span className="map-node map-node-b" />
+              <span className="map-node map-node-c" />
+              <span className="map-line map-line-a" />
+              <span className="map-line map-line-b" />
+            </div>
+            <List
+              items={[
+                { id: "north", label: "North Loop", description: "Crew A, three stops, one SLA watch.", meta: <Badge tone="info">Active</Badge> },
+                { id: "lake", label: "Lakeview", description: "Crew B on route after customer approval.", meta: <Badge tone="success">Clear</Badge> },
+                { id: "west", label: "West Yard", description: "Parts hold blocks critical closeout.", meta: <Badge tone="warning">Hold</Badge> }
+              ]}
+            />
+          </Paper>
+        </aside>
+      </section>
+
+      <WorkflowBoard columns={boardColumns} />
 
       <DataTable caption="Open work order queue" columns={workOrderColumns} rows={workOrderRows} />
     </PageFrame>
@@ -505,7 +587,7 @@ function ProofPage({ theme }: PageProps) {
           { key: "components", header: "ApexUI coverage" }
         ]}
         rows={[
-          { page: "Home", purpose: "Marketing", components: "AppBar, Sidebar, Card, Chart, Metric, Link" },
+          { page: "Home", purpose: "Marketing", components: "Header, navigation, Card, Chart, Metric, Link" },
           { page: "Metrics", purpose: "Dashboard", components: "Chart, Progress, WorkflowBoard, DataTable" },
           { page: "Work orders", purpose: "Forms", components: "TextInput, Select, DatePicker, FileUpload, Slider" },
           { page: "Customers", purpose: "Records", components: "SearchForm, DataGrid, Timeline, EmptyState" },
