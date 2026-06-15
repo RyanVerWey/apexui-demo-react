@@ -25,35 +25,38 @@ textarea {
 
 .site-shell {
   min-height: 100vh;
-  background: var(--apex-color-canvas);
+  background:
+    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--apex-color-primary) 10%, transparent), transparent 24rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--apex-color-surface) 82%, var(--apex-color-canvas)), var(--apex-color-canvas) 34rem);
   color: var(--apex-color-text);
 }
 
 .site-hero {
-  padding: var(--apex-space-6) var(--apex-space-6) var(--apex-space-10);
+  padding: var(--apex-space-6) var(--apex-space-6) var(--apex-space-8);
 }
 
 .site-main {
   display: grid;
-  gap: var(--apex-space-10);
-  padding-block: var(--apex-space-8) var(--apex-space-12);
+  gap: var(--apex-space-9);
+  padding-block: var(--apex-space-6) var(--apex-space-12);
 }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.78fr);
-  gap: var(--apex-space-8);
+  grid-template-columns: minmax(0, 0.98fr) minmax(390px, 0.82fr);
+  gap: clamp(var(--apex-space-6), 5vw, var(--apex-space-12));
   align-items: start;
 }
 
 .hero-copy {
-  max-width: 72ch;
+  max-width: 74ch;
+  padding-top: var(--apex-space-2);
 }
 
 .hero-title {
-  max-width: 12ch;
-  font-size: clamp(3rem, 7vw, 6.75rem);
-  line-height: 0.94;
+  max-width: 13ch;
+  font-size: clamp(3.25rem, 5.7vw, 5.4rem);
+  line-height: 0.96;
   letter-spacing: 0;
 }
 
@@ -61,13 +64,22 @@ textarea {
   max-width: 58ch;
 }
 
-.hero-proof {
-  max-width: 46rem;
-}
-
 .product-scene {
   display: grid;
   gap: var(--apex-space-5);
+  align-self: start;
+  align-content: start;
+}
+
+.scene-header {
+  display: flex;
+  gap: var(--apex-space-4);
+  align-items: start;
+  justify-content: space-between;
+}
+
+.proof-strip {
+  margin-top: var(--apex-space-7);
 }
 
 .section-stack {
@@ -103,6 +115,10 @@ textarea {
   scroll-margin-top: var(--apex-space-6);
 }
 
+.workspace-shell {
+  padding: var(--apex-space-5);
+}
+
 .app-layout {
   display: grid;
   grid-template-columns: minmax(220px, 280px) minmax(0, 1fr);
@@ -134,7 +150,7 @@ textarea {
 .workspace-grid > *,
 .two-column > *,
 .hero-grid > *,
-.hero-proof > * {
+.proof-strip > * {
   min-width: 0;
 }
 
@@ -156,6 +172,11 @@ textarea {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .scene-header {
+    align-items: stretch;
+    flex-direction: column;
+  }
 }
 
 @media (max-width: 720px) {
@@ -166,5 +187,14 @@ textarea {
   .site-main {
     gap: var(--apex-space-7);
     padding-block: var(--apex-space-5) var(--apex-space-8);
+  }
+
+  .hero-title {
+    max-width: 11ch;
+    font-size: clamp(2.5rem, 10.8vw, 3.4rem);
+  }
+
+  .workspace-shell {
+    padding: var(--apex-space-3);
   }
 }

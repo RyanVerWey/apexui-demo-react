@@ -183,33 +183,21 @@ function App() {
                 <Button variant="secondary">View package proof</Button>
                 <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">npm package</Link>
               </Stack>
-
-              <Grid columns="three" className="hero-proof">
-                <Box surface="surface" padding="md">
-                  <Typography variant="title">42+</Typography>
-                  <Typography variant="caption">React exports used for real composition</Typography>
-                </Box>
-                <Box surface="surface" padding="md">
-                  <Typography variant="title">2</Typography>
-                  <Typography variant="caption">Gilded token modes live on this page</Typography>
-                </Box>
-                <Box surface="surface" padding="md">
-                  <Typography variant="title">0</Typography>
-                  <Typography variant="caption">External UI libraries or restyled controls</Typography>
-                </Box>
-              </Grid>
             </Stack>
 
             <Paper elevation="md" className="product-scene">
-              <Toolbar
-                label="Launch room"
-                actions={
+              <div className="scene-header">
+                <Stack gap="sm">
+                  <Badge tone="info" className="site-kicker">Live workspace</Badge>
+                  <Typography variant="title">Launch room</Typography>
+                </Stack>
+                <div className="site-actions">
                   <ButtonGroup label="Theme mode">
                     <Button size="sm" variant={mode === "light" ? "primary" : "secondary"} onClick={() => setMode("light")}>Light</Button>
                     <Button size="sm" variant={mode === "dark" ? "primary" : "secondary"} onClick={() => setMode("dark")}>Dark</Button>
                   </ButtonGroup>
-                }
-              />
+                </div>
+              </div>
               <Stack gap="md">
                 <SearchForm label="Find package work" placeholder="Search component, owner, release" onSubmit={() => undefined} />
                 <Chart
@@ -231,6 +219,21 @@ function App() {
               </Stack>
             </Paper>
           </div>
+
+          <Grid columns="three" className="proof-strip">
+            <Box surface="surface" padding="md">
+              <Typography variant="title">42+</Typography>
+              <Typography variant="caption">React exports used for real composition</Typography>
+            </Box>
+            <Box surface="surface" padding="md">
+              <Typography variant="title">2 token modes</Typography>
+              <Typography variant="caption">Gilded light and dark are scoped on the page shell.</Typography>
+            </Box>
+            <Box surface="surface" padding="md">
+              <Typography variant="title">0 UI add-ons</Typography>
+              <Typography variant="caption">No external component library and no restyled ApexUI controls.</Typography>
+            </Box>
+          </Grid>
         </Container>
       </section>
 
@@ -259,8 +262,21 @@ function App() {
           </Grid>
         </section>
 
+        <section className="section-stack">
+          <div className="section-heading">
+            <Stack gap="sm">
+              <Badge tone="success" className="site-kicker">In practice</Badge>
+              <Typography as="h2" variant="title">ApexUI running the actual workflow.</Typography>
+            </Stack>
+            <Typography variant="body">
+              This is where the demo stops selling and starts operating: navigation, launch planning, forms, data, theme QA, and package proof.
+            </Typography>
+          </div>
+        </section>
+
         <section className="app-demo" aria-labelledby="workspace-heading">
-          <div className="app-layout">
+          <Paper elevation="md" className="workspace-shell">
+            <div className="app-layout">
             <Sidebar
               activeId={activeNav}
               heading="Workspace"
@@ -340,7 +356,8 @@ function App() {
                 <DataTable caption="Package readiness" columns={packageColumns} rows={packageRows} />
               </div>
             </Stack>
-          </div>
+            </div>
+          </Paper>
         </section>
 
         <section className="section-stack">
