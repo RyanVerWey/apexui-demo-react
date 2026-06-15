@@ -1,0 +1,10 @@
+node_modules
+.DS_Store
+dist
+build
+out
+.next
+.svelte-kit
+.angular
+.vite
+.env
