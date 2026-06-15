@@ -255,7 +255,6 @@ function HomePage({ navigate, theme }: PageProps) {
     <Stack gap="lg">
       <section className="hero-page">
         <Stack gap="lg" className="hero-copy">
-          <Badge tone="success" className="site-kicker">Premium field operations</Badge>
           <Typography as="h1" variant="display" className="hero-title">Field service that feels calm before the crew arrives.</Typography>
           <Typography variant="subtitle" className="hero-subtitle">
             Northstar coordinates commercial maintenance, emergency dispatch, customer approvals, and executive reporting from one operating system.
@@ -304,7 +303,6 @@ function HomePage({ navigate, theme }: PageProps) {
 
       <section className="service-story">
         <div>
-          <Badge tone="info">What customers see</Badge>
           <Typography as="h2" variant="title">A polished service website, not a component gallery.</Typography>
         </div>
         <div className="story-grid">
@@ -325,7 +323,7 @@ function HomePage({ navigate, theme }: PageProps) {
 
 function MetricsPage(_props: PageProps) {
   return (
-    <PageFrame eyebrow="Metrics" title="Operations command center" description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard.">
+    <PageFrame title="Operations command center" description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard.">
       <section className="dashboard-shell">
         <div className="dashboard-main">
           <div className="metric-band metric-band-four">
@@ -392,7 +390,7 @@ function WorkOrdersPage(_props: PageProps) {
   const [asset, setAsset] = React.useState("Rooftop unit 14");
 
   return (
-    <PageFrame eyebrow="Work orders" title="Create a service visit" description="A realistic intake page with typed fields, route selection, urgency, attachment, and dispatch confidence.">
+    <PageFrame title="Create a service visit" description="A realistic intake page with typed fields, route selection, urgency, attachment, and dispatch confidence.">
       <div className="two-column">
         <Card eyebrow="Request intake" title="Service details">
           <Stack gap="md">
@@ -445,7 +443,7 @@ function WorkOrdersPage(_props: PageProps) {
 
 function CustomersPage(_props: PageProps) {
   return (
-    <PageFrame eyebrow="Customers" title="Account pipeline and health records" description="A customer operations page with searchable records, structured data, and next-best action states.">
+    <PageFrame title="Account pipeline and health records" description="A customer operations page with searchable records, structured data, and next-best action states.">
       <Toolbar
         label="Account controls"
         actions={<ButtonGroup label="Customer actions"><Button size="sm">Add account</Button><Button size="sm" variant="secondary">Export CSV</Button></ButtonGroup>}
@@ -479,7 +477,7 @@ function SettingsPage({ mode, setMode }: PageProps) {
   const [tone, setTone] = React.useState("balanced");
 
   return (
-    <PageFrame eyebrow="Settings" title="Workspace preferences" description="A settings route proving tabs, toggles, theme mode, locale-like controls, and account preferences.">
+    <PageFrame title="Workspace preferences" description="A settings route proving tabs, toggles, theme mode, locale-like controls, and account preferences.">
       <Tabs
         label="Settings sections"
         activeId="workspace"
@@ -534,7 +532,7 @@ function SettingsPage({ mode, setMode }: PageProps) {
 
 function ProofPage({ theme }: PageProps) {
   return (
-    <PageFrame eyebrow="Package proof" title="React integration details" description="The demo installs real ApexUI packages from npm and uses route-level composition instead of preview-only examples.">
+    <PageFrame title="React integration details" description="The demo installs real ApexUI packages from npm and uses route-level composition instead of preview-only examples.">
       <div className="two-column">
         <Card eyebrow="Install path" title="@apexui/react">
           <Stepper activeIndex={3} steps={proofSteps} />
@@ -572,14 +570,11 @@ function ProofPage({ theme }: PageProps) {
   );
 }
 
-function PageFrame({ eyebrow, title, description, children }: { eyebrow: string; title: string; description: string; children: React.ReactNode }) {
+function PageFrame({ title, description, children }: { title: string; description: string; children: React.ReactNode }) {
   return (
     <Stack gap="lg">
       <header className="page-heading">
-        <Stack gap="sm">
-          <Badge tone="info" className="site-kicker">{eyebrow}</Badge>
-          <Typography as="h1" variant="display" className="page-title">{title}</Typography>
-        </Stack>
+        <Typography as="h1" variant="display" className="page-title">{title}</Typography>
         <Typography variant="body" className="page-description">{description}</Typography>
       </header>
       {children}

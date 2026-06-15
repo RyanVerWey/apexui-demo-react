@@ -319,11 +319,6 @@ textarea {
   grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr);
 }
 
-.site-kicker {
-  width: fit-content;
-  max-width: 100%;
-}
-
 .site-footer {
   display: flex;
   gap: var(--apex-space-5);
