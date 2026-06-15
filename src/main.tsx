@@ -141,6 +141,14 @@ function App() {
   const [toastOpen, setToastOpen] = React.useState(true);
   const theme = `gilded-${mode}`;
 
+  React.useEffect(() => {
+    document.documentElement.dataset.apexTheme = theme;
+
+    return () => {
+      delete document.documentElement.dataset.apexTheme;
+    };
+  }, [theme]);
+
   const handleSidebarSelect = (value: string | React.SyntheticEvent<HTMLElement>) => {
     if (typeof value === "string") {
       setActiveNav(value);

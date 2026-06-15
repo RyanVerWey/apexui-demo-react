@@ -26,7 +26,7 @@ textarea {
 .site-shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--apex-color-primary) 8%, transparent), transparent 22rem),
+    radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--apex-color-accent) 8%, transparent), transparent 22rem),
     linear-gradient(180deg, color-mix(in srgb, var(--apex-color-surface) 76%, var(--apex-color-canvas)), var(--apex-color-canvas) 32rem);
   color: var(--apex-color-text);
 }
@@ -85,7 +85,7 @@ textarea {
   padding: var(--apex-space-4);
   border: 1px solid var(--apex-color-border);
   border-radius: var(--apex-radius-md);
-  background: color-mix(in srgb, var(--apex-color-surface) 72%, var(--apex-color-primary));
+  background: color-mix(in srgb, var(--apex-color-surface) 72%, var(--apex-color-accent));
 }
 
 .proof-strip {
