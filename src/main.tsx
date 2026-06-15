@@ -3,20 +3,17 @@ import { createRoot, type Root } from "react-dom/client";
 import "@apexui/tokens/css";
 import "@apexui/react/styles.css";
 import {
-  Accordion,
   Alert,
   AppBar,
   Autocomplete,
   Avatar,
   Badge,
-  BottomNavigation,
   Box,
   Breadcrumbs,
   Button,
   ButtonGroup,
   Calendar,
   Card,
-  Carousel,
   Chart,
   Checkbox,
   Container,
@@ -26,88 +23,70 @@ import {
   Divider,
   EmptyState,
   FileUpload,
-  FloatingActionButton,
   Grid,
   Icon,
-  ImageList,
   Link,
-  Masonry,
-  Menu,
-  MenuBar,
+  List,
   NumberField,
-  Pagination,
   Paper,
-  Popover,
   Progress,
   RadioGroup,
   Rating,
   SearchForm,
   Select,
   Sidebar,
-  Skeleton,
   Slider,
   Snackbar,
-  SpeedDial,
-  Spinner,
   Stack,
   Stepper,
   Switch,
   Tabs,
   Textarea,
   TextInput,
-  TimePicker,
   Timeline,
   ToggleGroup,
   Toolbar,
-  Tooltip,
-  TransferList,
-  TreeView,
   Typography,
   WorkflowBoard
 } from "@apexui/react";
 import "./styles.css";
 
-type WorkRow = {
-  component: React.ReactNode;
-  layer: React.ReactNode;
-  owner: React.ReactNode;
-  risk: React.ReactNode;
+type PackageRow = {
+  package: React.ReactNode;
+  role: React.ReactNode;
+  usage: React.ReactNode;
   status: React.ReactNode;
 };
 
-const workColumns: Array<{ key: keyof WorkRow; header: string }> = [
-  { key: "component", header: "Component" },
-  { key: "layer", header: "Atomic layer" },
-  { key: "owner", header: "Owner" },
-  { key: "risk", header: "Risk" },
+type CustomerRow = {
+  team: React.ReactNode;
+  stack: React.ReactNode;
+  outcome: React.ReactNode;
+};
+
+const packageColumns: Array<{ key: keyof PackageRow; header: string }> = [
+  { key: "package", header: "Package" },
+  { key: "role", header: "Role" },
+  { key: "usage", header: "Usage" },
   { key: "status", header: "Status" }
 ];
 
-const workRows: WorkRow[] = [
-  { component: "TokenProvider", layer: "Foundation", owner: "Design Ops", risk: "Low", status: <Badge tone="success">Live</Badge> },
-  { component: "App shell", layer: "Organism", owner: "Frameworks", risk: "Medium", status: <Badge tone="info">Dogfood</Badge> },
-  { component: "Forms", layer: "Molecule", owner: "DX", risk: "Low", status: <Badge tone="success">Ready</Badge> },
-  { component: "Data surfaces", layer: "Organism", owner: "Systems", risk: "Medium", status: <Badge tone="warning">Watch</Badge> }
+const packageRows: PackageRow[] = [
+  { package: "@apexui/react", role: "Product UI", usage: "Shells, forms, charts, data", status: <Badge tone="success">Live</Badge> },
+  { package: "@apexui/tokens", role: "Theme source", usage: "Gilded light and dark", status: <Badge tone="success">Active</Badge> },
+  { package: "GitHub Pages", role: "Proof", usage: "Public demo deployment", status: <Badge tone="info">Deployed</Badge> }
 ];
 
-type RegistryRow = {
-  package: React.ReactNode;
-  version: React.ReactNode;
-  coverage: React.ReactNode;
-  notes: React.ReactNode;
-};
-
-const registryColumns: Array<{ key: keyof RegistryRow; header: string }> = [
-  { key: "package", header: "Package" },
-  { key: "version", header: "Version" },
-  { key: "coverage", header: "Coverage" },
-  { key: "notes", header: "Notes" }
+const customerColumns: Array<{ key: keyof CustomerRow; header: string }> = [
+  { key: "team", header: "Team" },
+  { key: "stack", header: "Stack" },
+  { key: "outcome", header: "Outcome" }
 ];
 
-const registryRows: RegistryRow[] = [
-  { package: "@apexui/react", version: "0.1.0", coverage: "42 exports", notes: "Atomic through organisms" },
-  { package: "@apexui/tokens", version: "0.1.0", coverage: "Theme CSS", notes: "Gilded light and dark active" },
-  { package: "vite app", version: "7.x", coverage: "Build target", notes: "GitHub Pages ready" }
+const customerRows: CustomerRow[] = [
+  { team: "Acme Design Ops", stack: "React + tokens", outcome: "One launch surface across web apps" },
+  { team: "Northstar Platform", stack: "React + web components", outcome: "Shared workflows without a rewrite" },
+  { team: "Ledger Product", stack: "React + i18n", outcome: "Theme and locale checks before release" }
 ];
 
 const boardColumns = [
@@ -115,451 +94,330 @@ const boardColumns = [
     id: "intake",
     title: "Intake",
     items: [
-      { id: "forms", title: "Form audit", meta: "TextInput, Select, RadioGroup" },
-      { id: "upload", title: "Evidence upload", meta: "FileUpload" }
+      { id: "brief", title: "Capture launch brief", meta: "SearchForm, TextInput" },
+      { id: "theme", title: "Pick theme mode", meta: "Switch, ToggleGroup" }
     ]
   },
   {
     id: "build",
     title: "Build",
     items: [
-      { id: "layout", title: "Responsive shell", meta: "Container, Grid, Stack" },
-      { id: "data", title: "Data desk", meta: "DataTable, DataGrid" }
+      { id: "layout", title: "Compose product shell", meta: "AppBar, Sidebar, Grid" },
+      { id: "data", title: "Wire evidence", meta: "Chart, DataTable" }
     ]
   },
   {
     id: "ship",
     title: "Ship",
     items: [
-      { id: "qa", title: "Theme QA", meta: "gilded-light, gilded-dark" },
-      { id: "release", title: "Release notes", meta: "Ready" }
+      { id: "qa", title: "Verify accessibility", meta: "Progress, Alert" },
+      { id: "docs", title: "Publish package notes", meta: "Timeline, EmptyState" }
     ]
   }
 ];
 
 const calendarDays = Array.from({ length: 35 }, (_, index) => {
-  const day = index - 2;
+  const day = index - 1;
   return {
     id: `day-${index}`,
-    label: day > 0 && day < 31 ? day : "",
+    label: day > 0 && day < 31 ? String(day) : "",
     muted: day <= 0 || day >= 31,
     selected: day === 18,
-    badge: day === 12 ? "QA" : day === 18 ? "Ship" : day === 25 ? "Docs" : undefined
+    badge: day === 7 ? "QA" : day === 18 ? "Ship" : day === 24 ? "Docs" : undefined
   };
 });
 
-const screenshotItems = [
-  {
-    alt: "Gilded light token preview",
-    caption: "Light shell",
-    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='260' viewBox='0 0 420 260'%3E%3Crect width='420' height='260' fill='%23fbfaf5'/%3E%3Crect x='32' y='34' width='356' height='48' rx='8' fill='%23fffdf7' stroke='%23ded2b6'/%3E%3Crect x='32' y='104' width='154' height='124' rx='8' fill='%23f4eddb'/%3E%3Crect x='210' y='104' width='178' height='124' rx='8' fill='%23fffdf7' stroke='%23ded2b6'/%3E%3Crect x='230' y='128' width='76' height='14' rx='7' fill='%239b6500'/%3E%3Crect x='230' y='158' width='132' height='10' rx='5' fill='%23665a43'/%3E%3C/svg%3E"
-  },
-  {
-    alt: "Gilded dark token preview",
-    caption: "Dark shell",
-    src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='420' height='260' viewBox='0 0 420 260'%3E%3Crect width='420' height='260' fill='%23090a0c'/%3E%3Crect x='32' y='34' width='356' height='48' rx='8' fill='%2315171a' stroke='%233f444c'/%3E%3Crect x='32' y='104' width='154' height='124' rx='8' fill='%2322252a'/%3E%3Crect x='210' y='104' width='178' height='124' rx='8' fill='%2315171a' stroke='%233f444c'/%3E%3Crect x='230' y='128' width='76' height='14' rx='7' fill='%23f6c343'/%3E%3Crect x='230' y='158' width='132' height='10' rx='5' fill='%23c7bea8'/%3E%3C/svg%3E"
-  }
+const implementationSteps = [
+  { id: "install", label: "Install", description: "Add @apexui/react and @apexui/tokens." },
+  { id: "theme", label: "Theme", description: "Scope data-apex-theme at the app shell." },
+  { id: "compose", label: "Compose", description: "Use atoms and molecules to build the page." },
+  { id: "ship", label: "Ship", description: "Deploy and dogfood the package API." }
 ];
 
 function App() {
   const [mode, setMode] = React.useState<"light" | "dark">("light");
-  const [activeTab, setActiveTab] = React.useState("overview");
-  const [activeNav, setActiveNav] = React.useState("release");
-  const [density, setDensity] = React.useState("balanced");
-  const [quality, setQuality] = React.useState(92);
-  const [rating, setRating] = React.useState(4);
-  const [selectedPackage, setSelectedPackage] = React.useState("@apexui/react");
+  const [activeView, setActiveView] = React.useState("launch");
+  const [activeNav, setActiveNav] = React.useState("overview");
+  const [quality, setQuality] = React.useState(91);
+  const [tone, setTone] = React.useState("balanced");
+  const [packageName, setPackageName] = React.useState("@apexui/react");
   const [toastOpen, setToastOpen] = React.useState(true);
   const theme = `gilded-${mode}`;
-  const handleNavSelect = (value: string | React.SyntheticEvent<HTMLElement>) => {
+
+  const handleSidebarSelect = (value: string | React.SyntheticEvent<HTMLElement>) => {
     if (typeof value === "string") {
       setActiveNav(value);
     }
   };
 
   return (
-    <main className="app-shell" data-apex-theme={theme}>
+    <main className="site-shell" data-apex-theme={theme}>
       <AppBar
-        title="ApexUI Release Studio"
-        navigation={<Breadcrumbs items={[{ label: "ApexUI", href: "#" }, { label: "React demo", current: true }]} />}
+        title="ApexUI"
+        navigation={<Breadcrumbs items={[{ label: "Demos", href: "#" }, { label: "React", current: true }]} />}
         actions={
-          <Stack direction="row" gap="sm" align="center" className="app-actions">
-            <Switch
-              label="Dark mode"
-              checked={mode === "dark"}
-              onChange={() => setMode((value) => (value === "light" ? "dark" : "light"))}
-            />
-            <Menu
-              label={<Icon name="moreHorizontal" title="Open release menu" />}
-              items={[
-                { id: "copy", label: "Copy package link" },
-                { id: "refresh", label: "Refresh checks" },
-                { id: "archive", label: "Archive candidate", disabled: true }
-              ]}
-            />
+          <Stack direction="row" gap="sm" align="center" className="site-actions">
+            <Button variant="secondary" size="sm">Docs</Button>
+            <Button size="sm">Start build</Button>
+            <Switch label="Dark" checked={mode === "dark"} onChange={() => setMode((value) => (value === "light" ? "dark" : "light"))} />
           </Stack>
         }
       />
 
-      <MenuBar
-        className="app-menubar"
-        items={[
-          { id: "release", label: "Release", current: true },
-          { id: "themes", label: "Themes" },
-          { id: "registry", label: "Registry" },
-          { id: "support", label: "Support" }
-        ]}
-      />
-
-      <Container size="full" className="app-main">
-        <div className="app-layout">
-          <Sidebar
-            activeId={activeNav}
-            heading="React workspace"
-            label="Demo sections"
-            onSelect={handleNavSelect}
-            items={[
-              { id: "release", label: "Release room", icon: <Icon name="release" />, badge: <Badge tone="success">Ready</Badge> },
-              { id: "tokens", label: "Theme QA", icon: <Icon name="theme" />, badge: <Badge tone="info">{mode}</Badge> },
-              { id: "components", label: "Component fit", icon: <Icon name="component" /> },
-              { id: "registry", label: "Registry ops", icon: <Icon name="registry" /> }
-            ]}
-            footer={<Alert tone="info" title="Atomic path">Atoms compose molecules, organisms, and release workflows.</Alert>}
-          />
-
-          <div className="app-page">
-            <Toolbar
-              label="Release controls"
-              actions={
-                <ButtonGroup label="Release actions">
-                  <Button size="sm">Publish candidate</Button>
-                  <Button size="sm" variant="secondary">Open checklist</Button>
-                </ButtonGroup>
-              }
-            >
-              <Stack direction="row" gap="sm" align="center" className="app-toolbar-copy">
-                <Badge tone="success">React native</Badge>
-                <Typography variant="body">Theme: {theme}</Typography>
-                <Tooltip content="Token CSS">
-                  <Icon name="token" title="Token source" />
-                </Tooltip>
+      <section className="site-hero">
+        <Container size="lg">
+          <div className="hero-grid">
+            <Stack gap="lg" className="hero-copy">
+              <Stack gap="sm">
+                <Badge tone="success" className="site-kicker">React package in practice</Badge>
+                <Typography as="h1" variant="display" className="hero-title">
+                  Build the release site and the product workflow from one system.
+                </Typography>
+                <Typography variant="subtitle" className="hero-subtitle">
+                  This demo is not a component sheet. It is a working product website with an embedded launch workspace, forms, data, theme controls, and package evidence, all using ApexUI React.
+                </Typography>
               </Stack>
-            </Toolbar>
 
-            <section className="app-hero">
-              <Paper elevation="md" className="app-hero-panel">
-                <Stack gap="lg">
-                  <Stack gap="sm">
-                    <Badge tone="success">Full product workflow</Badge>
-                    <Typography as="h1" variant="display">Registry launch command center</Typography>
-                    <Typography variant="subtitle">
-                      React demo using ApexUI atoms, molecules, organisms, and token themes end to end.
-                    </Typography>
-                  </Stack>
-                  <SearchForm label="Find component or package" placeholder="Autocomplete, tokens, workflow board" onSubmit={() => undefined} />
-                  <Stack direction="row" gap="sm" align="center" className="app-actions">
-                    <Button>Approve train</Button>
-                    <Button variant="secondary">Review evidence</Button>
-                    <Avatar initials="AV" alt="ApexUI reviewer" />
-                    <Popover
-                      placement="end"
-                      trigger={<Button variant="secondary" size="sm">Scope</Button>}
-                      content={<Typography variant="caption">Published package API only</Typography>}
-                    />
-                  </Stack>
-                </Stack>
-              </Paper>
+              <Stack direction="row" gap="sm" align="center" className="site-actions">
+                <Button>Plan a release</Button>
+                <Button variant="secondary">View package proof</Button>
+                <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">npm package</Link>
+              </Stack>
 
-              <Card eyebrow="Theme system" title="Gilded token mode">
-                <Stack gap="md">
-                  <ToggleGroup
-                    label="Density"
-                    value={density}
-                    onValueChange={setDensity}
-                    options={[
-                      { label: "Compact", value: "compact" },
-                      { label: "Balanced", value: "balanced" },
-                      { label: "Roomy", value: "roomy" }
-                    ]}
-                  />
-                  <Switch
-                    label="App dark mode"
-                    description="Switches data-apex-theme between gilded-light and gilded-dark."
-                    checked={mode === "dark"}
-                    onChange={() => setMode((value) => (value === "light" ? "dark" : "light"))}
-                  />
-                  <Progress label="Contrast checks" value={quality} />
-                  <Slider label="Quality gate" value={quality} onChange={(event) => setQuality(Number(event.currentTarget.value))} />
-                  <Rating label="Premium fit" value={rating} onValueChange={setRating} />
-                  <Select label="Theme family" value="gilded" options={[{ label: "Gilded", value: "gilded" }]} disabled />
-                </Stack>
-              </Card>
-            </section>
+              <Grid columns="three" className="hero-proof">
+                <Box surface="surface" padding="md">
+                  <Typography variant="title">42+</Typography>
+                  <Typography variant="caption">React exports used for real composition</Typography>
+                </Box>
+                <Box surface="surface" padding="md">
+                  <Typography variant="title">2</Typography>
+                  <Typography variant="caption">Gilded token modes live on this page</Typography>
+                </Box>
+                <Box surface="surface" padding="md">
+                  <Typography variant="title">0</Typography>
+                  <Typography variant="caption">External UI libraries or restyled controls</Typography>
+                </Box>
+              </Grid>
+            </Stack>
 
-            <Grid columns="three" className="app-kpis">
-              <Box surface="surface" padding="lg">
-                <Stack gap="sm">
-                  <Icon name="component" />
-                  <Typography variant="title">42 exports</Typography>
-                  <Typography variant="caption">Atoms through organisms available from @apexui/react.</Typography>
-                </Stack>
-              </Box>
-              <Box surface="surface" padding="lg">
-                <Stack gap="sm">
-                  <Icon name="palette" />
-                  <Typography variant="title">2 modes</Typography>
-                  <Typography variant="caption">One app switch drives gilded token light and dark.</Typography>
-                </Stack>
-              </Box>
-              <Box surface="surface" padding="lg">
-                <Stack gap="sm">
-                  <Icon name="workflow" />
-                  <Typography variant="title">5 layers</Typography>
-                  <Typography variant="caption">Foundations, atoms, molecules, organisms, pages.</Typography>
-                </Stack>
-              </Box>
-            </Grid>
-
-            <section className="app-grid">
-              <Card eyebrow="Plan" title="Atomic component flow">
-                <Stepper
-                  activeIndex={3}
-                  steps={[
-                    { id: "tokens", label: "Tokens", description: "CSS variables set theme physics" },
-                    { id: "atoms", label: "Atoms", description: "Controls, type, icons, fields" },
-                    { id: "molecules", label: "Molecules", description: "Cards, tabs, lists, uploads" },
-                    { id: "organisms", label: "Organisms", description: "Shell, data, workflow surfaces" }
-                  ]}
-                />
-              </Card>
-              <Chart
-                label="Framework adoption"
-                data={[
-                  { label: "React", value: 94 },
-                  { label: "Tokens", value: 92 },
-                  { label: "Docs", value: 78 },
-                  { label: "QA", value: quality }
-                ]}
+            <Paper elevation="md" className="product-scene">
+              <Toolbar
+                label="Launch room"
+                actions={
+                  <ButtonGroup label="Theme mode">
+                    <Button size="sm" variant={mode === "light" ? "primary" : "secondary"} onClick={() => setMode("light")}>Light</Button>
+                    <Button size="sm" variant={mode === "dark" ? "primary" : "secondary"} onClick={() => setMode("dark")}>Dark</Button>
+                  </ButtonGroup>
+                }
               />
-              <Card eyebrow="Inputs" title="Release parameters">
-                <Stack gap="sm">
-                  <Autocomplete
-                    label="Package"
-                    value={selectedPackage}
-                    onChange={(event) => setSelectedPackage(event.currentTarget.value)}
-                    options={["@apexui/react", "@apexui/tokens", "apexui-demo-react"]}
-                  />
-                  <TextInput label="Package scope" value={selectedPackage} readOnly />
-                  <NumberField label="Release candidate" defaultValue={1} min={1} />
-                  <DatePicker label="Ship date" defaultValue="2026-06-18" />
-                  <TimePicker label="Cut time" defaultValue="15:30" />
-                </Stack>
-              </Card>
-            </section>
-
-            <Paper elevation="sm">
               <Stack gap="md">
-                <Tabs
-                  label="Release views"
-                  activeId={activeTab}
-                  onChange={setActiveTab}
-                  items={[
-                    { id: "overview", label: "Overview" },
-                    { id: "api", label: "API" },
-                    { id: "theme", label: "Theme" },
-                    { id: "docs", label: "Docs" }
+                <SearchForm label="Find package work" placeholder="Search component, owner, release" onSubmit={() => undefined} />
+                <Chart
+                  label="Release health"
+                  data={[
+                    { label: "Theme", value: 96 },
+                    { label: "Forms", value: 88 },
+                    { label: "Data", value: 91 },
+                    { label: "Docs", value: 83 }
                   ]}
                 />
-                <DataTable caption="Release workstreams" columns={workColumns} rows={workRows} />
-                <Pagination count={4} page={activeTab === "overview" ? 1 : 2} onPageChange={() => undefined} />
+                <Timeline
+                  events={[
+                    { id: "install", label: "Install package", description: "React and token CSS loaded from npm.", meta: "Done" },
+                    { id: "compose", label: "Compose page", description: "Website and app workspace share ApexUI controls.", meta: "Now" },
+                    { id: "deploy", label: "Deploy proof", description: "GitHub Pages publishes the working surface.", meta: "Next" }
+                  ]}
+                />
               </Stack>
             </Paper>
+          </div>
+        </Container>
+      </section>
 
-            <section className="app-split">
-              <Stack gap="md">
+      <Container size="lg" className="site-main">
+        <section className="section-stack">
+          <div className="section-heading">
+            <Stack gap="sm">
+              <Badge tone="info" className="site-kicker">Why teams use it</Badge>
+              <Typography as="h2" variant="title">A real site with real product jobs.</Typography>
+            </Stack>
+            <Typography variant="body">
+              The same components that sell the system above also run the workspace below.
+            </Typography>
+          </div>
+
+          <Grid columns="three">
+            <Card eyebrow="01" title="Launch faster">
+              <Typography variant="body">Use the same primitives for public pages, authenticated apps, and docs evidence.</Typography>
+            </Card>
+            <Card eyebrow="02" title="Theme with confidence">
+              <Typography variant="body">Switch token modes without touching component internals or duplicating CSS.</Typography>
+            </Card>
+            <Card eyebrow="03" title="Dogfood package APIs">
+              <Typography variant="body">Every form, chart, table, and shell on this page imports from the published React package.</Typography>
+            </Card>
+          </Grid>
+        </section>
+
+        <section className="app-demo" aria-labelledby="workspace-heading">
+          <div className="app-layout">
+            <Sidebar
+              activeId={activeNav}
+              heading="Workspace"
+              label="Launch sections"
+              onSelect={handleSidebarSelect}
+              items={[
+                { id: "overview", label: "Overview", icon: <Icon name="home" />, badge: <Badge tone="success">Live</Badge> },
+                { id: "packages", label: "Packages", icon: <Icon name="package" /> },
+                { id: "themes", label: "Themes", icon: <Icon name="palette" /> },
+                { id: "customers", label: "Customers", icon: <Icon name="users" /> }
+              ]}
+              footer={<Alert tone="info" title="Atomic use">Controls compose sections, sections compose this product page.</Alert>}
+            />
+
+            <Stack gap="lg" className="workspace-panel">
+              <Toolbar
+                label="Product workspace"
+                actions={
+                  <ButtonGroup label="Workspace actions">
+                    <Button size="sm">Invite reviewer</Button>
+                    <Button size="sm" variant="secondary">Export report</Button>
+                  </ButtonGroup>
+                }
+              >
+                <Badge tone="success">{theme}</Badge>
+              </Toolbar>
+
+              <Tabs
+                label="Workspace view"
+                activeId={activeView}
+                onChange={setActiveView}
+                items={[
+                  { id: "launch", label: "Launch plan" },
+                  { id: "theme", label: "Theme QA" },
+                  { id: "evidence", label: "Evidence" }
+                ]}
+              />
+
+              <div className="workspace-grid">
                 <WorkflowBoard columns={boardColumns} />
-                <DataGrid caption="Registry readiness grid" columns={registryColumns} rows={registryRows} />
-              </Stack>
+                <Card eyebrow="Release controls" title="Configure the train">
+                  <Stack gap="md">
+                    <Autocomplete
+                      label="Package"
+                      value={packageName}
+                      onChange={(event) => setPackageName(event.currentTarget.value)}
+                      options={["@apexui/react", "@apexui/tokens", "apexui-demo-react"]}
+                    />
+                    <Select label="Theme family" value="gilded" options={[{ label: "Gilded", value: "gilded" }]} disabled />
+                    <DatePicker label="Ship date" defaultValue="2026-06-20" />
+                    <NumberField label="Release candidate" defaultValue={1} min={1} />
+                    <Textarea label="Launch note" defaultValue="React demo proves ApexUI in an end-to-end product website." />
+                  </Stack>
+                </Card>
+              </div>
 
-              <Stack gap="md">
-                <Card eyebrow="Form molecule" title="Component request">
-                  <Stack gap="sm">
-                    <RadioGroup
-                      label="Priority"
-                      name="priority"
-                      value="standard"
+              <div className="workspace-grid workspace-grid-tight">
+                <Card eyebrow="Theme quality" title="Gilded mode checks">
+                  <Stack gap="md">
+                    <ToggleGroup
+                      label="Product tone"
+                      value={tone}
+                      onValueChange={setTone}
                       options={[
-                        { label: "Standard", value: "standard", description: "Next release batch" },
-                        { label: "Urgent", value: "urgent", description: "Blocks registry use" }
+                        { label: "Focused", value: "focused" },
+                        { label: "Balanced", value: "balanced" },
+                        { label: "Rich", value: "rich" }
                       ]}
                     />
-                    <Checkbox label="Include token audit" description="Attach theme evidence to issue." defaultChecked />
-                    <Textarea label="Notes" defaultValue="Track package-level friction back to ApexUI issues." />
-                    <FileUpload
-                      label="Attach audit evidence"
-                      description="TXT, PNG, or JSON proof files"
-                      files={[{ name: "pages-smoke.txt", meta: "verified" }]}
-                    />
+                    <Progress label="Accessibility pass" value={quality} />
+                    <Slider label="Quality target" value={quality} onChange={(event) => setQuality(Number(event.currentTarget.value))} />
+                    <Rating label="Executive fit" value={4} />
+                    <Checkbox label="Publish as public package proof" defaultChecked />
                   </Stack>
                 </Card>
 
-                <Timeline
-                  events={[
-                    { id: "tokens", label: "Tokens published", meta: "0.1.0" },
-                    { id: "demo", label: "React demo dogfood", meta: "now" },
-                    { id: "registry", label: "Registry hardening", meta: "next" }
-                  ]}
-                />
-              </Stack>
-            </section>
+                <DataTable caption="Package readiness" columns={packageColumns} rows={packageRows} />
+              </div>
+            </Stack>
+          </div>
+        </section>
 
-            <section className="app-two-column">
+        <section className="section-stack">
+          <div className="section-heading">
+            <Stack gap="sm">
+              <Badge tone="info" className="site-kicker">Implementation</Badge>
+              <Typography as="h2" variant="title">From install to shipped page.</Typography>
+            </Stack>
+            <Button variant="secondary">Copy install command</Button>
+          </div>
+
+          <div className="two-column">
+            <Card eyebrow="Developer path" title="Four steps to a working app">
+              <Stepper activeIndex={3} steps={implementationSteps} />
+            </Card>
+            <Card eyebrow="Launch calendar" title="Team schedule">
               <Calendar
-                label="Release calendar"
+                label="June launch plan"
                 monthLabel="June 2026"
                 weekdays={["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]}
                 days={calendarDays}
               />
-              <TransferList
-                sourceTitle="Available checks"
-                targetTitle="Ship gate"
-                sourceItems={[
-                  { id: "axe", label: "Accessibility scan", selected: true },
-                  { id: "bundle", label: "Bundle review" },
-                  { id: "docs", label: "Docs screenshots" }
-                ]}
-                targetItems={[
-                  { id: "build", label: "npm run build", selected: true },
-                  { id: "theme", label: "gilded token pass", selected: true }
-                ]}
-              />
-            </section>
+            </Card>
+          </div>
+        </section>
 
-            <section className="app-showcase">
-              <Masonry columns="two">
-                <Card eyebrow="Token imagery" title="Visual theme previews">
-                  <ImageList columns="two" items={screenshotItems} />
-                </Card>
-                <Card eyebrow="Navigation" title="Registry tree">
-                  <TreeView
-                    label="Component hierarchy"
-                    items={[
-                      {
-                        id: "foundation",
-                        label: "Foundation",
-                        children: [
-                          { id: "tokens", label: "Tokens" },
-                          { id: "icons", label: "Icons" }
-                        ]
-                      },
-                      {
-                        id: "react",
-                        label: "React",
-                        children: [
-                          { id: "atoms", label: "Atoms" },
-                          { id: "molecules", label: "Molecules" },
-                          { id: "organisms", label: "Organisms" }
-                        ]
-                      }
-                    ]}
-                  />
-                </Card>
-                <Carousel
-                  label="Release story"
-                  items={[
-                    {
-                      id: "foundation",
-                      label: "Foundation",
-                      content: (
-                        <Stack gap="sm">
-                          <Badge tone="success">Foundation</Badge>
-                          <Typography variant="title">Token CSS drives every surface.</Typography>
-                          <Typography variant="body">No component internals are restyled in app CSS.</Typography>
-                        </Stack>
-                      )
-                    },
-                    {
-                      id: "composition",
-                      label: "Composition",
-                      content: (
-                        <Stack gap="sm">
-                          <Badge tone="info">Composition</Badge>
-                          <Typography variant="title">ApexUI components build real product workflows.</Typography>
-                          <Typography variant="body">Shell, tables, boards, forms, calendar, and release evidence share one system.</Typography>
-                        </Stack>
-                      )
-                    }
+        <section className="section-stack">
+          <div className="section-heading">
+            <Stack gap="sm">
+              <Badge tone="success" className="site-kicker">Evidence</Badge>
+              <Typography as="h2" variant="title">Proof beyond the hero.</Typography>
+            </Stack>
+            <Typography variant="body">Real data surfaces show what teams would manage after adoption.</Typography>
+          </div>
+
+          <div className="two-column two-column-wide">
+            <DataGrid caption="Customer rollout examples" columns={customerColumns} rows={customerRows} />
+            <Card eyebrow="Intake form" title="Request migration help">
+              <Stack gap="md">
+                <TextInput label="Workstream" defaultValue="React package adoption" />
+                <RadioGroup
+                  label="Timeline"
+                  name="timeline"
+                  value="this-week"
+                  options={[
+                    { label: "This week", value: "this-week" },
+                    { label: "This month", value: "this-month" }
                   ]}
                 />
-              </Masonry>
-
-              <Accordion
-                items={[
-                  { id: "styling", title: "Styling contract", content: "App CSS owns layout, spacing, responsive behavior, and page composition only." },
-                  { id: "tokens", title: "Theme contract", content: "The app toggles data-apex-theme between gilded-light and gilded-dark." },
-                  { id: "atomic", title: "Atomic contract", content: "ApexUI atoms become molecules and organisms before page-level composition." }
-                ]}
-              />
-            </section>
-
-            <section className="app-utility-row">
-              <Alert tone="success" title="Release candidate coherent">Theme, package, data, form, navigation, and workflow surfaces render in one app.</Alert>
-              <Snackbar
-                open={toastOpen}
-                tone="info"
-                action={<Button size="sm" variant="secondary" onClick={() => setToastOpen(false)}>Dismiss</Button>}
-              >
-                Gilded {mode} mode active.
-              </Snackbar>
-              <Stack direction="row" gap="sm" align="center" className="app-loading">
-                <Spinner label="Checking package metadata" size="sm" />
-                <Skeleton label="Build status loading" size="md" />
+                <FileUpload label="Attach current UI audit" description="Use screenshots or JSON reports." files={[{ name: "react-pages-smoke.txt", meta: "verified" }]} />
+                <Button>Send request</Button>
               </Stack>
-            </section>
-
-            <Divider>Ship room</Divider>
-
-            <EmptyState
-              title="No preview-only surface remains"
-              description="This demo behaves like a complete release desk assembled from ApexUI."
-              action={
-                <Stack direction="row" gap="sm" align="center" className="app-actions">
-                  <Button size="sm">Open next issue</Button>
-                  <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">Package page</Link>
-                </Stack>
-              }
-            />
+            </Card>
           </div>
-        </div>
+        </section>
+
+        <section className="section-stack">
+          <EmptyState
+            title="Ready to build a real product surface"
+            description="ApexUI React is shown here as a complete website and operating workflow, not as a preview grid."
+            action={
+              <Stack direction="row" gap="sm" align="center" className="site-actions">
+                <Button>Start with React</Button>
+                <Button variant="secondary">Compare frameworks</Button>
+              </Stack>
+            }
+          />
+        </section>
       </Container>
 
-      <div className="app-bottom-nav">
-        <BottomNavigation
-          label="Mobile release navigation"
-          activeId={activeNav}
-          onChange={handleNavSelect}
-          items={[
-            { id: "release", label: "Release", icon: <Icon name="release" /> },
-            { id: "tokens", label: "Tokens", icon: <Icon name="palette" /> },
-            { id: "registry", label: "Registry", icon: <Icon name="registry" /> }
-          ]}
-        />
-      </div>
-
-      <div className="app-floating-actions">
-        <SpeedDial
-          open
-          label="Quick actions"
-          actions={[
-            { id: "refresh", label: "Refresh", icon: <Icon name="refresh" /> },
-            { id: "copy", label: "Copy", icon: <Icon name="copy" /> },
-            { id: "send", label: "Send", icon: <Icon name="send" /> }
-          ]}
-        />
-        <FloatingActionButton aria-label="Create release note" size="sm">
-          <Icon name="add" />
-        </FloatingActionButton>
-      </div>
+      <Snackbar
+        open={toastOpen}
+        tone="info"
+        action={<Button size="sm" variant="secondary" onClick={() => setToastOpen(false)}>Dismiss</Button>}
+      >
+        React demo rebuilt as full ApexUI product website.
+      </Snackbar>
     </main>
   );
 }
