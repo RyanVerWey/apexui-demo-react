@@ -6,9 +6,7 @@ import {
   Alert,
   AppBar,
   Autocomplete,
-  Avatar,
   Badge,
-  Box,
   Breadcrumbs,
   Button,
   ButtonGroup,
@@ -23,7 +21,6 @@ import {
   Divider,
   EmptyState,
   FileUpload,
-  Grid,
   Icon,
   Link,
   List,
@@ -171,10 +168,10 @@ function App() {
               <Stack gap="sm">
                 <Badge tone="success" className="site-kicker">React package in practice</Badge>
                 <Typography as="h1" variant="display" className="hero-title">
-                  Build the release site and the product workflow from one system.
+                  Ship a release cockpit with ApexUI React.
                 </Typography>
                 <Typography variant="subtitle" className="hero-subtitle">
-                  This demo is not a component sheet. It is a working product website with an embedded launch workspace, forms, data, theme controls, and package evidence, all using ApexUI React.
+                  A complete product site with launch planning, theme QA, data review, forms, and package evidence, all composed from ApexUI components.
                 </Typography>
               </Stack>
 
@@ -183,6 +180,21 @@ function App() {
                 <Button variant="secondary">View package proof</Button>
                 <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">npm package</Link>
               </Stack>
+
+              <Paper as="div" elevation="sm" className="proof-strip">
+                <div className="proof-item">
+                  <Typography variant="title">42+</Typography>
+                  <Typography variant="caption">React exports used for real composition</Typography>
+                </div>
+                <div className="proof-item">
+                  <Typography variant="title">2 modes</Typography>
+                  <Typography variant="caption">Gilded light and dark are scoped on the shell.</Typography>
+                </div>
+                <div className="proof-item">
+                  <Typography variant="title">0 add-ons</Typography>
+                  <Typography variant="caption">No external UI library or restyled ApexUI controls.</Typography>
+                </div>
+              </Paper>
             </Stack>
 
             <Paper elevation="md" className="product-scene">
@@ -209,6 +221,20 @@ function App() {
                     { label: "Docs", value: 83 }
                   ]}
                 />
+                <div className="scene-summary" aria-label="Release summary">
+                  <div>
+                    <Typography variant="caption">Readiness</Typography>
+                    <Typography variant="title">91%</Typography>
+                  </div>
+                  <div>
+                    <Typography variant="caption">Theme scope</Typography>
+                    <Typography variant="title">{theme}</Typography>
+                  </div>
+                  <div>
+                    <Typography variant="caption">Package</Typography>
+                    <Typography variant="title">Live</Typography>
+                  </div>
+                </div>
                 <Timeline
                   events={[
                     { id: "install", label: "Install package", description: "React and token CSS loaded from npm.", meta: "Done" },
@@ -219,21 +245,6 @@ function App() {
               </Stack>
             </Paper>
           </div>
-
-          <Grid columns="three" className="proof-strip">
-            <Box surface="surface" padding="md">
-              <Typography variant="title">42+</Typography>
-              <Typography variant="caption">React exports used for real composition</Typography>
-            </Box>
-            <Box surface="surface" padding="md">
-              <Typography variant="title">2 token modes</Typography>
-              <Typography variant="caption">Gilded light and dark are scoped on the page shell.</Typography>
-            </Box>
-            <Box surface="surface" padding="md">
-              <Typography variant="title">0 UI add-ons</Typography>
-              <Typography variant="caption">No external component library and no restyled ApexUI controls.</Typography>
-            </Box>
-          </Grid>
         </Container>
       </section>
 
@@ -242,24 +253,30 @@ function App() {
           <div className="section-heading">
             <Stack gap="sm">
               <Badge tone="info" className="site-kicker">Why teams use it</Badge>
-              <Typography as="h2" variant="title">A real site with real product jobs.</Typography>
+              <Typography as="h2" variant="title">A product surface, not a preview grid.</Typography>
             </Stack>
             <Typography variant="body">
-              The same components that sell the system above also run the workspace below.
+              The public story and the operating workspace share the same tokens, forms, data, and navigation.
             </Typography>
           </div>
 
-          <Grid columns="three">
-            <Card eyebrow="01" title="Launch faster">
-              <Typography variant="body">Use the same primitives for public pages, authenticated apps, and docs evidence.</Typography>
-            </Card>
-            <Card eyebrow="02" title="Theme with confidence">
-              <Typography variant="body">Switch token modes without touching component internals or duplicating CSS.</Typography>
-            </Card>
-            <Card eyebrow="03" title="Dogfood package APIs">
-              <Typography variant="body">Every form, chart, table, and shell on this page imports from the published React package.</Typography>
-            </Card>
-          </Grid>
+          <div className="value-layout">
+            <Paper elevation="sm" className="value-statement">
+              <Stack gap="md">
+                <Badge tone="info" className="site-kicker">System proof</Badge>
+                <Typography variant="title">One page has to prove the whole contract: tokens, components, routing, and workflow.</Typography>
+                <Typography variant="body">ApexUI should feel useful before a team reads docs. This React demo shows the package as a production surface with real decisions, not a catalog dressed as an app.</Typography>
+              </Stack>
+            </Paper>
+            <List
+              className="value-list"
+              items={[
+                { id: "site", label: "Website composition", description: "Hero, proof band, customer evidence, and implementation path use ApexUI primitives.", meta: <Badge tone="success">Visible</Badge> },
+                { id: "app", label: "Workspace composition", description: "Sidebar, toolbar, tabs, board, data table, forms, calendar, and feedback run the workflow.", meta: <Badge tone="info">Interactive</Badge> },
+                { id: "package", label: "Package dogfood", description: "Every visible control comes from @apexui/react with token CSS scoped by theme.", meta: <Badge tone="success">Registry ready</Badge> }
+              ]}
+            />
+          </div>
         </section>
 
         <section className="section-stack">

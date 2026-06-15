@@ -26,42 +26,42 @@ textarea {
 .site-shell {
   min-height: 100vh;
   background:
-    radial-gradient(circle at 18% 8%, color-mix(in srgb, var(--apex-color-primary) 10%, transparent), transparent 24rem),
-    linear-gradient(180deg, color-mix(in srgb, var(--apex-color-surface) 82%, var(--apex-color-canvas)), var(--apex-color-canvas) 34rem);
+    radial-gradient(circle at 14% 10%, color-mix(in srgb, var(--apex-color-primary) 8%, transparent), transparent 22rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--apex-color-surface) 76%, var(--apex-color-canvas)), var(--apex-color-canvas) 32rem);
   color: var(--apex-color-text);
 }
 
 .site-hero {
-  padding: var(--apex-space-6) var(--apex-space-6) var(--apex-space-8);
+  padding: var(--apex-space-7) var(--apex-space-6) var(--apex-space-6);
 }
 
 .site-main {
   display: grid;
-  gap: var(--apex-space-9);
-  padding-block: var(--apex-space-6) var(--apex-space-12);
+  gap: clamp(var(--apex-space-7), 6vw, var(--apex-space-11));
+  padding-block: var(--apex-space-5) var(--apex-space-12);
 }
 
 .hero-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.98fr) minmax(390px, 0.82fr);
-  gap: clamp(var(--apex-space-6), 5vw, var(--apex-space-12));
+  grid-template-columns: minmax(0, 0.78fr) minmax(460px, 1fr);
+  gap: clamp(var(--apex-space-6), 5vw, var(--apex-space-10));
   align-items: start;
 }
 
 .hero-copy {
-  max-width: 74ch;
-  padding-top: var(--apex-space-2);
+  max-width: 58ch;
+  padding-top: var(--apex-space-3);
 }
 
 .hero-title {
   max-width: 13ch;
-  font-size: clamp(3.25rem, 5.7vw, 5.4rem);
-  line-height: 0.96;
+  font-size: 3.45rem;
+  line-height: 1.02;
   letter-spacing: 0;
 }
 
 .hero-subtitle {
-  max-width: 58ch;
+  max-width: 62ch;
 }
 
 .product-scene {
@@ -78,8 +78,32 @@ textarea {
   justify-content: space-between;
 }
 
+.scene-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--apex-space-3);
+  padding: var(--apex-space-4);
+  border: 1px solid var(--apex-color-border);
+  border-radius: var(--apex-radius-md);
+  background: color-mix(in srgb, var(--apex-color-surface) 72%, var(--apex-color-primary));
+}
+
 .proof-strip {
-  margin-top: var(--apex-space-7);
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0;
+  margin-top: 0;
+  padding: 0;
+}
+
+.proof-item {
+  display: grid;
+  gap: var(--apex-space-1);
+  padding: var(--apex-space-4);
+}
+
+.proof-item + .proof-item {
+  border-left: 1px solid var(--apex-color-border);
 }
 
 .section-stack {
@@ -100,6 +124,23 @@ textarea {
 
 .section-heading > :first-child {
   max-width: 52rem;
+}
+
+.value-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 0.86fr) minmax(0, 1.14fr);
+  gap: var(--apex-space-5);
+  align-items: stretch;
+}
+
+.value-statement {
+  display: grid;
+  align-content: center;
+}
+
+.value-list {
+  align-self: stretch;
+  margin: 0;
 }
 
 .site-actions {
@@ -156,6 +197,8 @@ textarea {
 
 @media (max-width: 1080px) {
   .hero-grid,
+  .proof-strip,
+  .value-layout,
   .app-layout,
   .workspace-grid,
   .workspace-grid-tight,
@@ -177,11 +220,16 @@ textarea {
     align-items: stretch;
     flex-direction: column;
   }
+
+  .proof-item + .proof-item {
+    border-left: 0;
+    border-top: 1px solid var(--apex-color-border);
+  }
 }
 
 @media (max-width: 720px) {
   .site-hero {
-    padding: var(--apex-space-4) var(--apex-space-3) var(--apex-space-7);
+    padding: var(--apex-space-4) var(--apex-space-3) var(--apex-space-6);
   }
 
   .site-main {
@@ -191,10 +239,15 @@ textarea {
 
   .hero-title {
     max-width: 11ch;
-    font-size: clamp(2.5rem, 10.8vw, 3.4rem);
+    font-size: 2.2rem;
+    line-height: 1.06;
   }
 
   .workspace-shell {
     padding: var(--apex-space-3);
+  }
+
+  .scene-summary {
+    grid-template-columns: 1fr;
   }
 }
