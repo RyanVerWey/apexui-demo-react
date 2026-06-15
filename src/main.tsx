@@ -324,22 +324,24 @@ function HomePage({ navigate, theme }: PageProps) {
 function MetricsPage(_props: PageProps) {
   return (
     <PageFrame title="Operations command center" description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard.">
-      <section className="dashboard-shell">
-        <div className="dashboard-main">
-          <div className="metric-band metric-band-four">
-            <Metric label="Revenue protected" value="$4.8M" tone="success" />
-            <Metric label="Open SLA risk" value="11" tone="warning" />
-            <Metric label="Utilization" value="87%" tone="info" />
-            <Metric label="Health" value="92%" tone="success" />
-          </div>
+      <section className="metric-band metric-band-four metric-band-compact" aria-label="Operations summary">
+        <Metric label="Revenue protected" value="$4.8M" note="+12% this quarter" tone="success" />
+        <Metric label="Open SLA risk" value="11" note="3 need dispatch today" tone="warning" />
+        <Metric label="Utilization" value="87%" note="North region leads" tone="info" />
+        <Metric label="Health" value="92%" note="4 accounts improving" tone="success" />
+      </section>
 
-          <Paper elevation="sm" className="panel-stack dispatch-panel">
-            <div className="panel-heading">
+      <section className="dashboard-visual-grid">
+        <Paper elevation="sm" className="panel-stack dispatch-panel">
+          <div className="panel-heading">
+            <div>
               <Typography variant="title">Dispatch health</Typography>
-              <Badge tone="success">Live</Badge>
+              <Typography variant="caption">Completion rate by weekday</Typography>
             </div>
+            <Badge tone="success">Live</Badge>
+          </div>
           <Chart
-            label="Weekly performance"
+            label="Weekly dispatch completion"
             data={[
               { label: "Mon", value: 72 },
               { label: "Tue", value: 84 },
@@ -348,29 +350,102 @@ function MetricsPage(_props: PageProps) {
               { label: "Fri", value: 88 }
             ]}
           />
-          <Progress label="Preventive maintenance coverage" value={82} />
-          <Progress label="Parts availability" value={76} />
+        </Paper>
+
+        <Paper elevation="sm" className="panel-stack">
+          <div className="panel-heading">
+            <div>
+              <Typography variant="title">Regional load</Typography>
+              <Typography variant="caption">Scheduled capacity by territory</Typography>
+            </div>
+            <Badge tone="info">4 regions</Badge>
+          </div>
+          <Chart
+            label="Regional scheduled capacity"
+            data={[
+              { label: "North Loop", value: 86 },
+              { label: "Lakeview", value: 64 },
+              { label: "West Yard", value: 73 },
+              { label: "South Bay", value: 58 }
+            ]}
+          />
+        </Paper>
+
+        <Paper elevation="sm" className="panel-stack">
+          <div className="panel-heading">
+            <div>
+              <Typography variant="title">SLA risk mix</Typography>
+              <Typography variant="caption">Open risk by operational cause</Typography>
+            </div>
+            <Badge tone="warning">11 open</Badge>
+          </div>
+          <Chart
+            label="Open SLA risk by cause"
+            data={[
+              { label: "Parts hold", value: 42 },
+              { label: "Crew delay", value: 28 },
+              { label: "Customer approval", value: 18 },
+              { label: "Weather", value: 12 }
+            ]}
+          />
+        </Paper>
+
+        <Paper elevation="sm" className="panel-stack">
+          <div className="panel-heading">
+            <div>
+              <Typography variant="title">Customer health</Typography>
+              <Typography variant="caption">Portfolio trend by account segment</Typography>
+            </div>
+            <Badge tone="success">92%</Badge>
+          </div>
+          <Chart
+            label="Customer health by segment"
+            data={[
+              { label: "Enterprise", value: 94 },
+              { label: "Priority", value: 87 },
+              { label: "Preventive", value: 91 },
+              { label: "At risk", value: 38 }
+            ]}
+          />
+        </Paper>
+      </section>
+
+      <section className="dashboard-shell">
+        <div className="dashboard-main">
+          <Paper elevation="sm" className="panel-stack">
+            <div className="panel-heading">
+              <div>
+                <Typography variant="title">Crew utilization</Typography>
+                <Typography variant="caption">Assigned work by crew</Typography>
+              </div>
+              <Badge tone="info">87% avg</Badge>
+            </div>
+            <Chart
+              label="Crew utilization"
+              data={[
+                { label: "Crew A", value: 92 },
+                { label: "Crew B", value: 76 },
+                { label: "Crew C", value: 88 },
+                { label: "Crew D", value: 81 }
+              ]}
+            />
           </Paper>
         </div>
 
         <aside className="dashboard-side">
-          <Paper elevation="sm" className="territory-panel">
+          <Paper elevation="sm" className="territory-panel panel-stack">
             <div className="panel-heading">
-              <Typography variant="title">Route map</Typography>
+              <div>
+                <Typography variant="title">Territory watchlist</Typography>
+                <Typography variant="caption">Actual route exceptions, not a fake map</Typography>
+              </div>
               <Badge tone="warning">7 risks</Badge>
-            </div>
-            <div className="map-visual" aria-hidden="true">
-              <span className="map-node map-node-a" />
-              <span className="map-node map-node-b" />
-              <span className="map-node map-node-c" />
-              <span className="map-line map-line-a" />
-              <span className="map-line map-line-b" />
             </div>
             <List
               items={[
-                { id: "north", label: "North Loop", description: "Crew A, three stops, one SLA watch.", meta: <Badge tone="info">Active</Badge> },
-                { id: "lake", label: "Lakeview", description: "Crew B on route after customer approval.", meta: <Badge tone="success">Clear</Badge> },
-                { id: "west", label: "West Yard", description: "Parts hold blocks critical closeout.", meta: <Badge tone="warning">Hold</Badge> }
+                { id: "north", label: "North Loop", description: "Crew A has three stops and one SLA watch.", meta: <Badge tone="info">Active</Badge> },
+                { id: "lake", label: "Lakeview", description: "Crew B cleared after customer approval.", meta: <Badge tone="success">Clear</Badge> },
+                { id: "west", label: "West Yard", description: "Parts hold blocks a critical closeout.", meta: <Badge tone="warning">Hold</Badge> }
               ]}
             />
           </Paper>
@@ -582,11 +657,12 @@ function PageFrame({ title, description, children }: { title: string; descriptio
   );
 }
 
-function Metric({ label, value, tone }: { label: string; value: string; tone: "info" | "success" | "warning" }) {
+function Metric({ label, value, note, tone }: { label: string; value: string; note?: string; tone: "info" | "success" | "warning" }) {
   return (
-    <Paper as="article" elevation="sm" className="metric-card">
-      <Badge tone={tone}>{label}</Badge>
+    <Paper as="article" elevation="sm" className={`metric-card metric-card-${tone}`}>
+      <span className="metric-label">{label}</span>
       <Typography variant="title">{value}</Typography>
+      {note && <span className="metric-note">{note}</span>}
     </Paper>
   );
 }
