@@ -182,7 +182,6 @@ function App() {
 
       <Container size="lg" className="route-shell">
         <section className="route-panel" aria-label={`${activeRoute.label} page`}>
-          {route !== "home" && <RouteBar route={route} navigate={navigate} />}
           {route === "home" && <HomePage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
           {route === "metrics" && <MetricsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
           {route === "work-orders" && <WorkOrdersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
@@ -232,30 +231,6 @@ function SiteHeader({ route, navigate, mode, setMode }: { route: RouteId; naviga
         <Switch label="Dark" checked={mode === "dark"} onChange={() => setMode(mode === "light" ? "dark" : "light")} />
       </Stack>
     </header>
-  );
-}
-
-function RouteBar({ route, navigate }: { route: RouteId; navigate: (route: RouteId) => void }) {
-  return (
-    <nav className="route-bar" aria-label="Operations navigation">
-      <div>
-        <Badge tone="info">React route</Badge>
-        <Typography variant="caption">Northstar Field Services</Typography>
-      </div>
-      <div className="route-bar-links">
-        {routes.filter((item) => item.id !== "home").map((item) => (
-          <button
-            className={route === item.id ? "route-pill route-pill-active" : "route-pill"}
-            key={item.id}
-            onClick={() => navigate(item.id)}
-            type="button"
-          >
-            {item.icon}
-            <span>{item.label}</span>
-          </button>
-        ))}
-      </div>
-    </nav>
   );
 }
 
@@ -458,7 +433,6 @@ function WorkOrdersPage(_props: PageProps) {
             />
             <NumberField label="Crew size" defaultValue={2} min={1} max={8} />
             <Slider label="Dispatch confidence" value={confidence} onChange={(event) => setConfidence(Number(event.currentTarget.value))} />
-            <Progress label="Dispatch confidence" value={confidence} />
             <Checkbox label="Notify customer when crew is assigned" defaultChecked />
             <Alert tone={priority === "emergency" ? "warning" : "info"} title="Routing note">Crew assignment updates the customer timeline and route board.</Alert>
             <Button>Create work order</Button>

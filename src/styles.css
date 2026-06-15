@@ -74,7 +74,6 @@ textarea {
 }
 
 .primary-nav,
-.route-bar-links,
 .site-footer nav {
   display: flex;
   flex-wrap: wrap;
@@ -88,8 +87,7 @@ textarea {
 }
 
 .nav-link,
-.site-footer button,
-.route-pill {
+.site-footer button {
   border: 0;
   border-radius: var(--apex-radius-sm);
   color: var(--apex-color-muted);
@@ -126,30 +124,6 @@ textarea {
 
 .route-panel {
   min-width: 0;
-}
-
-.route-bar {
-  display: flex;
-  gap: var(--apex-space-4);
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--apex-space-6);
-  padding: var(--apex-space-3);
-  border: 1px solid var(--apex-color-border);
-  border-radius: var(--apex-radius-md);
-  background: var(--apex-color-surface);
-}
-
-.route-pill {
-  display: inline-flex;
-  gap: var(--apex-space-2);
-  align-items: center;
-  padding: var(--apex-space-2) var(--apex-space-3);
-}
-
-.route-pill-active {
-  color: var(--apex-color-on-accent);
-  background: var(--apex-color-accent);
 }
 
 .hero-page {
@@ -399,7 +373,6 @@ textarea {
     min-height: auto;
   }
 
-  .route-bar,
   .site-footer {
     align-items: stretch;
     flex-direction: column;
@@ -423,10 +396,5 @@ textarea {
   .page-title {
     max-width: 13ch;
     font-size: 2rem;
-  }
-
-  .route-bar-links {
-    align-items: stretch;
-    flex-direction: column;
   }
 }
