@@ -523,11 +523,14 @@ function CustomersPage(_props: PageProps) {
         label="Account controls"
         actions={<ButtonGroup label="Customer actions"><Button size="sm">Add account</Button><Button size="sm" variant="secondary">Export CSV</Button></ButtonGroup>}
       >
-        <SearchForm label="Find customer" placeholder="Search account, plan, owner" onSubmit={() => undefined} />
+        <SearchForm className="customer-search" label="Find customer" placeholder="Search account, plan, owner" onSubmit={() => undefined} />
       </Toolbar>
 
-      <div className="two-column two-column-wide">
+      <section className="customer-records" aria-label="Customer account records">
         <DataGrid caption="Customer account list" columns={customerColumns} rows={customerRows} />
+      </section>
+
+      <section className="customer-insight-grid" aria-label="Customer account insights">
         <Paper elevation="sm" className="panel-stack">
           <Typography variant="title">Account timeline</Typography>
           <Timeline
@@ -537,13 +540,35 @@ function CustomersPage(_props: PageProps) {
               { id: "renew", label: "Renewal", description: "Cobalt Labs expanding enterprise support.", meta: "Jun 24" }
             ]}
           />
-          <EmptyState
-            title="No escalations selected"
-            description="Select a customer row to open the full account plan."
-            action={<Button variant="secondary">Open account plan</Button>}
+        </Paper>
+
+        <Paper elevation="sm" className="panel-stack">
+          <div className="panel-heading">
+            <div>
+              <Typography variant="title">Health by plan</Typography>
+              <Typography variant="caption">Renewal stability across customer tiers</Typography>
+            </div>
+            <Badge tone="success">4 rows</Badge>
+          </div>
+          <Chart
+            label="Customer health by plan"
+            data={[
+              { label: "Preventive", value: 92 },
+              { label: "Priority", value: 78 },
+              { label: "Enterprise", value: 88 },
+              { label: "At risk", value: 31 }
+            ]}
           />
         </Paper>
-      </div>
+
+        <Paper elevation="sm" className="panel-stack">
+          <EmptyState
+            title="Open account plan"
+            description="Select a customer row to review service history, renewal risk, and route coverage."
+            action={<Button variant="secondary">Review customer plan</Button>}
+          />
+        </Paper>
+      </section>
     </PageFrame>
   );
 }

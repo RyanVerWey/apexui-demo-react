@@ -225,6 +225,45 @@ textarea {
   gap: var(--apex-space-5);
 }
 
+.customer-records,
+.customer-insight-grid {
+  display: grid;
+  gap: var(--apex-space-5);
+}
+
+.customer-records {
+  min-width: 0;
+}
+
+.customer-search {
+  width: min(100%, 36rem);
+}
+
+.customer-search .apex-field {
+  width: 100%;
+  min-width: min(22rem, 100%);
+}
+
+.customer-records .apex-data-grid {
+  width: 100%;
+}
+
+.customer-records .apex-data-grid table {
+  width: 100%;
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.customer-records .apex-data-grid th,
+.customer-records .apex-data-grid td {
+  white-space: normal;
+}
+
+.customer-insight-grid {
+  grid-template-columns: minmax(280px, 0.85fr) minmax(280px, 0.85fr) minmax(280px, 0.7fr);
+  align-items: stretch;
+}
+
 .dashboard-visual-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -331,6 +370,7 @@ textarea {
   .page-heading,
   .dashboard-shell,
   .dashboard-visual-grid,
+  .customer-insight-grid,
   .story-grid,
   .two-column,
   .two-column-wide,
