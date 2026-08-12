@@ -9,7 +9,7 @@
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {
-    "@apexui/react": "0.1.0",
+    "@apexui/react": "file:vendor/apexui/apexui-react-0.1.1.tgz",
     "@apexui/tokens": "0.1.0",
     "@vitejs/plugin-react": "^5.0.0",
     "vite": "^7.0.0",
