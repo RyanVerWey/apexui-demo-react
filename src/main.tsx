@@ -43,7 +43,16 @@ import {
 } from "@apexui/react";
 import "./styles.css";
 
-type RouteId = "home" | "metrics" | "work-orders" | "customers" | "settings" | "proof";
+type InteractiveDataGridProps = React.ComponentProps<typeof DataGrid> & {
+  filterable?: boolean;
+  pageable?: boolean;
+  pageSize?: number;
+  sortable?: boolean;
+};
+
+const InteractiveDataGrid = DataGrid as React.ComponentType<InteractiveDataGridProps>;
+
+type RouteId = "home" | "metrics" | "work-orders" | "customers" | "data-table" | "settings" | "proof";
 
 type PageProps = {
   navigate: (route: RouteId) => void;
@@ -53,17 +62,26 @@ type PageProps = {
 };
 
 type WorkOrderRow = {
-  crew: React.ReactNode;
-  region: React.ReactNode;
-  priority: React.ReactNode;
-  status: React.ReactNode;
+  crew: string;
+  region: string;
+  priority: string;
+  status: string;
 };
 
 type CustomerRow = {
-  account: React.ReactNode;
-  plan: React.ReactNode;
-  nextVisit: React.ReactNode;
-  health: React.ReactNode;
+  account: string;
+  plan: string;
+  nextVisit: string;
+  health: string;
+};
+
+type ServiceRecordRow = {
+  account: string;
+  region: string;
+  owner: string;
+  priority: string;
+  status: string;
+  window: string;
 };
 
 const routes: Array<{ id: RouteId; label: string; eyebrow: string; icon: React.ReactNode }> = [
@@ -71,35 +89,58 @@ const routes: Array<{ id: RouteId; label: string; eyebrow: string; icon: React.R
   { id: "metrics", label: "Metrics", eyebrow: "Dashboard", icon: <Icon name="chartLine" /> },
   { id: "work-orders", label: "Work orders", eyebrow: "Forms", icon: <Icon name="clipboardList" /> },
   { id: "customers", label: "Customers", eyebrow: "Records", icon: <Icon name="users" /> },
+  { id: "data-table", label: "Data table", eyebrow: "Grid", icon: <Icon name="table" /> },
   { id: "settings", label: "Settings", eyebrow: "Account", icon: <Icon name="settings" /> },
   { id: "proof", label: "Package proof", eyebrow: "Integration", icon: <Icon name="package" /> }
 ];
 
-const workOrderColumns: Array<{ key: keyof WorkOrderRow; header: string }> = [
-  { key: "crew", header: "Crew" },
-  { key: "region", header: "Region" },
-  { key: "priority", header: "Priority" },
-  { key: "status", header: "Status" }
+const workOrderColumns: Array<{ key: keyof WorkOrderRow; header: string; sortable: boolean; filterable: boolean }> = [
+  { key: "crew", header: "Crew", sortable: true, filterable: true },
+  { key: "region", header: "Region", sortable: true, filterable: true },
+  { key: "priority", header: "Priority", sortable: true, filterable: true },
+  { key: "status", header: "Status", sortable: true, filterable: true }
 ];
 
 const workOrderRows: WorkOrderRow[] = [
-  { crew: "Crew A", region: "North Loop", priority: <Badge tone="warning">High</Badge>, status: <Badge tone="info">Scheduled</Badge> },
-  { crew: "Crew B", region: "Lakeview", priority: <Badge tone="success">Normal</Badge>, status: <Badge tone="success">On route</Badge> },
-  { crew: "Crew C", region: "West Yard", priority: <Badge tone="danger">Critical</Badge>, status: <Badge tone="warning">Needs parts</Badge> }
+  { crew: "Crew A", region: "North Loop", priority: "High", status: "Scheduled" },
+  { crew: "Crew B", region: "Lakeview", priority: "Normal", status: "On route" },
+  { crew: "Crew C", region: "West Yard", priority: "Critical", status: "Needs parts" },
+  { crew: "Crew D", region: "South Bay", priority: "Normal", status: "Approval" },
+  { crew: "Crew E", region: "Harbor", priority: "High", status: "Ready" }
 ];
 
-const customerColumns: Array<{ key: keyof CustomerRow; header: string }> = [
-  { key: "account", header: "Account" },
-  { key: "plan", header: "Plan" },
-  { key: "nextVisit", header: "Next visit" },
-  { key: "health", header: "Health" }
+const customerColumns: Array<{ key: keyof CustomerRow; header: string; sortable: boolean; filterable: boolean }> = [
+  { key: "account", header: "Account", sortable: true, filterable: true },
+  { key: "plan", header: "Plan", sortable: true, filterable: true },
+  { key: "nextVisit", header: "Next visit", sortable: true, filterable: true },
+  { key: "health", header: "Health", sortable: true, filterable: true }
 ];
 
 const customerRows: CustomerRow[] = [
-  { account: "Aster Foods", plan: "Preventive", nextVisit: "Jun 18", health: <Badge tone="success">Stable</Badge> },
-  { account: "Briar Commons", plan: "Priority", nextVisit: "Jun 19", health: <Badge tone="warning">Watch</Badge> },
-  { account: "Cobalt Labs", plan: "Enterprise", nextVisit: "Jun 20", health: <Badge tone="info">Expanding</Badge> },
-  { account: "Dover Hotel Group", plan: "Preventive", nextVisit: "Jun 21", health: <Badge tone="success">Stable</Badge> }
+  { account: "Aster Foods", plan: "Preventive", nextVisit: "Jun 18", health: "Stable" },
+  { account: "Briar Commons", plan: "Priority", nextVisit: "Jun 19", health: "Watch" },
+  { account: "Cobalt Labs", plan: "Enterprise", nextVisit: "Jun 20", health: "Expanding" },
+  { account: "Dover Hotel Group", plan: "Preventive", nextVisit: "Jun 21", health: "Stable" },
+  { account: "Evergreen Bank", plan: "Enterprise", nextVisit: "Jun 24", health: "Stable" },
+  { account: "Foundry Works", plan: "Priority", nextVisit: "Jun 25", health: "Recovering" }
+];
+
+const serviceRecordColumns: Array<{ key: keyof ServiceRecordRow; header: string }> = [
+  { key: "account", header: "Account" },
+  { key: "region", header: "Region" },
+  { key: "owner", header: "Owner" },
+  { key: "priority", header: "Priority" },
+  { key: "status", header: "Status" },
+  { key: "window", header: "Window" }
+];
+
+const serviceRecordRows: ServiceRecordRow[] = [
+  { account: "Aster Foods", region: "North Loop", owner: "Maya Chen", priority: "High", status: "Scheduled", window: "09:00-11:00" },
+  { account: "Briar Commons", region: "Lakeview", owner: "Omar Haddad", priority: "Critical", status: "Needs parts", window: "11:30-14:00" },
+  { account: "Cobalt Labs", region: "West Yard", owner: "Elena Rossi", priority: "Normal", status: "On route", window: "13:00-15:00" },
+  { account: "Dover Hotel Group", region: "Harbor", owner: "Nina Patel", priority: "High", status: "Approval", window: "15:00-17:00" },
+  { account: "Evergreen Bank", region: "Uptown", owner: "Theo Brooks", priority: "Normal", status: "Closed", window: "08:00-10:00" },
+  { account: "Foundry Works", region: "South Plant", owner: "Ana Silva", priority: "Critical", status: "Triage", window: "10:30-12:30" }
 ];
 
 const boardColumns = [
@@ -186,6 +227,7 @@ function App() {
           {route === "metrics" && <MetricsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
           {route === "work-orders" && <WorkOrdersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
           {route === "customers" && <CustomersPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
+          {route === "data-table" && <DataTablePage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
           {route === "settings" && <SettingsPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
           {route === "proof" && <ProofPage navigate={navigate} mode={mode} setMode={setMode} theme={theme} />}
         </section>
@@ -454,7 +496,7 @@ function MetricsPage(_props: PageProps) {
           </Paper>
       }
       workflow={<WorkflowBoard columns={boardColumns} />}
-      queue={<DataTable caption="Open work order queue" columns={workOrderColumns} rows={workOrderRows} />}
+      queue={<InteractiveDataGrid caption="Open work order queue" columns={workOrderColumns} rows={workOrderRows} sortable filterable pageable pageSize={3} />}
     />
   );
 }
@@ -532,7 +574,7 @@ function CustomersPage(_props: PageProps) {
         <SearchForm className="customer-search" label="Find customer" placeholder="Search account, plan, owner" onSubmit={() => undefined} />
       </Toolbar>
       }
-      records={<DataGrid caption="Customer account list" columns={customerColumns} rows={customerRows} />}
+      records={<InteractiveDataGrid caption="Customer account list" columns={customerColumns} rows={customerRows} sortable filterable pageable pageSize={4} />}
       insights={
         <>
         <Paper elevation="sm" className="panel-stack">
@@ -572,6 +614,37 @@ function CustomersPage(_props: PageProps) {
             action={<Button variant="secondary">Review customer plan</Button>}
           />
         </Paper>
+        </>
+      }
+    />
+  );
+}
+
+function DataTablePage(_props: PageProps) {
+  return (
+    <RecordsPageTemplate
+      title="Service records data table"
+      description="A routed data-table page proving one-line ApexUI DataGrid sorting, filtering, and paging in React."
+      controls={
+        <Toolbar label="Data table controls" actions={<ButtonGroup label="Table actions"><Button size="sm">Export CSV</Button><Button size="sm" variant="secondary">Save view</Button></ButtonGroup>}>
+          <SearchForm className="customer-search" label="Find service record" placeholder="Use column filters below for scoped search" onSubmit={() => undefined} />
+        </Toolbar>
+      }
+      records={<InteractiveDataGrid caption="Service record queue" columns={serviceRecordColumns} rows={serviceRecordRows} sortable filterable pageable pageSize={3} />}
+      insights={
+        <>
+          <Paper elevation="sm" className="panel-stack">
+            <Typography variant="title">Grid proof</Typography>
+            <List items={[
+              { id: "sort", label: "One-line sorting", description: "Enabled with the sortable flag.", meta: "DataGrid" },
+              { id: "filter", label: "Column filters", description: "Enabled with the filterable flag.", meta: "DataGrid" },
+              { id: "page", label: "Paging", description: "Enabled with pageable and pageSize.", meta: "DataGrid" }
+            ]} />
+          </Paper>
+          <Paper elevation="sm" className="panel-stack">
+            <Typography variant="title">Release note</Typography>
+            <Typography variant="body">This page uses the current @apexui/react package from npm.</Typography>
+          </Paper>
         </>
       }
     />
@@ -673,9 +746,10 @@ function ProofPage({ theme }: PageProps) {
           ]}
           rows={[
             { page: "Home", purpose: "Marketing", template: "MarketingHomeTemplate", components: "Header, navigation, Card, Chart, Metric, Link" },
-            { page: "Metrics", purpose: "Dashboard", template: "DashboardTemplate", components: "Chart, WorkflowBoard, DataTable" },
+            { page: "Metrics", purpose: "Dashboard", template: "DashboardTemplate", components: "Chart, WorkflowBoard, DataGrid" },
             { page: "Work orders", purpose: "Forms", template: "FormPageTemplate", components: "TextInput, Select, DatePicker, FileUpload, Slider" },
             { page: "Customers", purpose: "Records", template: "RecordsPageTemplate", components: "SearchForm, DataGrid, Timeline, EmptyState" },
+            { page: "Data table", purpose: "Grid", template: "RecordsPageTemplate", components: "DataGrid filtering, sorting, pagination" },
             { page: "Settings", purpose: "Account", template: "SettingsTemplate", components: "Tabs, Switch, ToggleGroup, Rating, Alert" },
             { page: "Proof", purpose: "Integration", template: "ProofTemplate", components: "Stepper, List, Alert, DataTable" }
           ]}

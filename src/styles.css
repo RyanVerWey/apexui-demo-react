@@ -86,6 +86,7 @@ textarea {
 .primary-nav {
   flex-wrap: nowrap;
   justify-content: center;
+  min-width: 0;
 }
 
 .nav-link,
@@ -370,8 +371,17 @@ textarea {
   min-width: 0;
 }
 
-@media (max-width: 1120px) {
-  .site-header,
+@media (max-width: 1360px) {
+  .site-header {
+    gap: var(--apex-space-3);
+    padding-inline: var(--apex-space-5);
+  }
+
+  .nav-link {
+    padding-inline: var(--apex-space-2);
+    font-size: var(--apex-font-size-sm);
+  }
+
   .hero-page,
   .page-heading,
   .dashboard-shell,
@@ -386,13 +396,13 @@ textarea {
     grid-template-columns: 1fr;
   }
 
-  .primary-nav,
   .header-actions {
     justify-content: start;
   }
 
   .primary-nav {
     flex-wrap: wrap;
+    justify-content: center;
   }
 
   .hero-page {
