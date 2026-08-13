@@ -9,7 +9,9 @@
 html,
 body {
   margin: 0;
+  min-width: 0;
   min-height: 100%;
+  overflow-x: hidden;
   background: var(--apex-color-canvas);
   color: var(--apex-color-text);
 }
@@ -42,6 +44,7 @@ textarea {
   padding: var(--apex-space-4) clamp(var(--apex-space-4), 5vw, var(--apex-space-8));
   border-bottom: 1px solid var(--apex-color-border);
   background: color-mix(in srgb, var(--apex-color-surface) 92%, var(--apex-color-canvas));
+  backdrop-filter: blur(16px);
 }
 
 .brand-lockup {
@@ -51,6 +54,7 @@ textarea {
   width: fit-content;
   color: var(--apex-color-text);
   text-decoration: none;
+  transition: transform var(--apex-motion-fast) ease;
 }
 
 .brand-lockup strong,
@@ -98,6 +102,10 @@ textarea {
   font-weight: var(--apex-font-weight-bold);
   text-decoration: none;
   cursor: pointer;
+  transition:
+    background-color var(--apex-motion-fast) ease,
+    color var(--apex-motion-fast) ease,
+    transform var(--apex-motion-fast) ease;
 }
 
 .nav-link {
@@ -110,6 +118,14 @@ textarea {
 .site-footer button:hover {
   color: var(--apex-color-text);
   background: var(--apex-color-subtle);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .brand-lockup:hover,
+  .nav-link:hover,
+  .site-footer button:hover {
+    transform: translateY(-1px);
+  }
 }
 
 .header-actions,
@@ -133,8 +149,8 @@ textarea {
 
 .hero-page {
   display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(460px, 0.88fr);
-  gap: clamp(var(--apex-space-7), 6vw, var(--apex-space-12));
+  grid-template-columns: minmax(0, 0.92fr) minmax(0, 0.88fr);
+  gap: clamp(var(--apex-space-6), 6vw, var(--apex-space-12));
   align-items: center;
   min-height: 36rem;
 }
@@ -179,6 +195,16 @@ textarea {
 
 .trust-band strong {
   color: var(--apex-color-text);
+  transition:
+    color var(--apex-motion-fast) ease,
+    transform var(--apex-motion-fast) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .trust-band strong:hover {
+    color: var(--apex-color-accent);
+    transform: translateY(-1px);
+  }
 }
 
 .service-story {
@@ -293,6 +319,10 @@ textarea {
   align-content: start;
   min-height: 0;
   padding: var(--apex-space-3);
+}
+
+.metric-progress {
+  margin-top: var(--apex-space-2);
 }
 
 .metric-label,
@@ -415,6 +445,17 @@ textarea {
   }
 }
 
+@media (max-width: 940px) {
+  .site-header {
+    grid-template-columns: 1fr;
+  }
+
+  .primary-nav,
+  .header-actions {
+    justify-content: start;
+  }
+}
+
 @media (max-width: 720px) {
   .site-header {
     padding: var(--apex-space-3);
@@ -432,5 +473,29 @@ textarea {
   .page-title {
     max-width: 13ch;
     font-size: 2rem;
+  }
+
+  .site-actions {
+    align-items: stretch;
+  }
+
+  .site-actions > * {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brand-lockup,
+  .nav-link,
+  .site-footer button,
+  .trust-band strong {
+    transition: none;
+  }
+
+  .brand-lockup:hover,
+  .nav-link:hover,
+  .site-footer button:hover,
+  .trust-band strong:hover {
+    transform: none;
   }
 }

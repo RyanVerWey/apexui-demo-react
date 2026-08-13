@@ -329,9 +329,9 @@ function HomePage({ navigate, theme }: PageProps) {
             ]}
           />
           <div className="metric-band">
-            <Metric label="Open orders" value="128" tone="info" />
-            <Metric label="First-time fix" value="94%" tone="success" />
-            <Metric label="At-risk sites" value="7" tone="warning" />
+            <Metric label="Open orders" value="128" fill={82} progressLabel="Ready to dispatch" tone="info" />
+            <Metric label="First-time fix" value="94%" fill={94} progressLabel="Quality trend" tone="success" />
+            <Metric label="At-risk sites" value="7" fill={38} progressLabel="Risk contained" tone="warning" />
           </div>
         </Paper>
       }
@@ -371,10 +371,10 @@ function MetricsPage(_props: PageProps) {
       description="Real route density: crew load, SLA risk, customer health, and work-order evidence in one dashboard."
       summary={
         <>
-        <Metric label="Revenue protected" value="$4.8M" note="+12% this quarter" tone="success" />
-        <Metric label="Open SLA risk" value="11" note="3 need dispatch today" tone="warning" />
-        <Metric label="Utilization" value="87%" note="North region leads" tone="info" />
-        <Metric label="Health" value="92%" note="4 accounts improving" tone="success" />
+        <Metric label="Revenue protected" value="$4.8M" fill={88} note="+12% this quarter" progressLabel="Quarter target" tone="success" />
+        <Metric label="Open SLA risk" value="11" fill={64} note="3 need dispatch today" progressLabel="Risk coverage" tone="warning" />
+        <Metric label="Utilization" value="87%" fill={87} note="North region leads" progressLabel="Crew load" tone="info" />
+        <Metric label="Health" value="92%" fill={92} note="4 accounts improving" progressLabel="Account health" tone="success" />
         </>
       }
       visualGrid={
@@ -875,12 +875,13 @@ function ProofTemplate({ title, description, install, evidence, coverage }: { ti
   );
 }
 
-function Metric({ label, value, note, tone }: { label: string; value: string; note?: string; tone: "info" | "success" | "warning" }) {
+function Metric({ fill, label, note, progressLabel, tone, value }: { fill?: number; label: string; note?: string; progressLabel?: string; tone: "info" | "success" | "warning"; value: string }) {
   return (
     <Paper as="article" elevation="sm" className={`metric-card metric-card-${tone}`}>
       <span className="metric-label">{label}</span>
       <Typography variant="title">{value}</Typography>
       {note && <span className="metric-note">{note}</span>}
+      {fill !== undefined && <Progress className="metric-progress" label={progressLabel ?? label} value={fill} />}
     </Paper>
   );
 }
