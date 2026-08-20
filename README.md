@@ -1,3 +1,3 @@
-# ApexUI React Demo
+# CorvaUI React Demo
 
-Public GitHub Pages demo using `@apexui/react` and published npm packages.
+Public GitHub Pages demo for CorvaUI using the current `@apexui/react` compatibility package and published npm packages.

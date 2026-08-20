@@ -188,6 +188,9 @@ const proofSteps = [
   { id: "ship", label: "Ship", description: "GitHub Pages deploys the real demo surface." }
 ];
 
+const brandAssetBase = window.location.pathname.startsWith("/apexui-demo-react") ? "/apexui-demo-react/" : "/";
+const corvaMarkSrc = `${brandAssetBase}corvaui-raven-mark.svg`;
+
 function getRouteFromHash(): RouteId {
   const value = window.location.hash.replace(/^#\/?/, "");
   return routes.some((route) => route.id === value) ? (value as RouteId) : "home";
@@ -242,11 +245,11 @@ function App() {
 function SiteHeader({ route, navigate, mode, setMode }: { route: RouteId; navigate: (route: RouteId) => void; mode: "light" | "dark"; setMode: (mode: "light" | "dark") => void }) {
   return (
     <header className="site-header">
-      <a className="brand-lockup" href="#/" onClick={(event) => { event.preventDefault(); navigate("home"); }} aria-label="Northstar Field Services home">
-        <span className="brand-mark"><Icon name="navigation" /></span>
+      <a className="brand-lockup" href="#/" onClick={(event) => { event.preventDefault(); navigate("home"); }} aria-label="CorvaUI React demo home">
+        <span className="brand-mark" aria-hidden="true"><img src={corvaMarkSrc} alt="" /></span>
         <span>
-          <strong>Northstar</strong>
-          <small>Field Services</small>
+          <strong>CorvaUI</strong>
+          <small>React demo</small>
         </span>
       </a>
 
@@ -280,8 +283,8 @@ function SiteFooter({ navigate }: { navigate: (route: RouteId) => void }) {
   return (
     <footer className="site-footer">
       <div>
-        <strong>Northstar Field Services</strong>
-        <Typography variant="caption">React demo built entirely with ApexUI tokens and components.</Typography>
+        <strong>CorvaUI React</strong>
+        <Typography variant="caption">React demo built entirely with CorvaUI tokens and components.</Typography>
       </div>
       <nav aria-label="Footer navigation">
         <button type="button" onClick={() => navigate("metrics")}>Operations</button>
@@ -299,19 +302,19 @@ function HomePage({ navigate, theme }: PageProps) {
         <>
           <Typography as="h1" variant="display" className="hero-title">Field service that feels calm before the crew arrives.</Typography>
           <Typography variant="subtitle" className="hero-subtitle">
-            Northstar coordinates commercial maintenance, emergency dispatch, customer approvals, and executive reporting from one operating system.
+            CorvaUI coordinates commercial maintenance, emergency dispatch, customer approvals, and executive reporting from one operating system.
           </Typography>
           <Stack direction="row" gap="sm" align="center" className="site-actions">
             <Button onClick={() => navigate("work-orders")}>Book a service visit</Button>
             <Button variant="secondary" onClick={() => navigate("metrics")}>View live metrics</Button>
-            <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">ApexUI React</Link>
+            <Link href="https://www.npmjs.com/package/@apexui/react" variant="standalone">CorvaUI React</Link>
           </Stack>
         </>
       }
       consolePanel={
         <Paper elevation="md" className="hero-console">
           <Toolbar
-            label="Today at Northstar"
+            label="Today at Corva"
             actions={<Badge tone="success">{theme}</Badge>}
           >
             <ButtonGroup label="Home actions">
@@ -354,7 +357,7 @@ function HomePage({ navigate, theme }: PageProps) {
             <Card eyebrow="Operations" title="Managers see the route plan before it breaks">
               <Typography variant="body">Dashboards combine work orders, crew load, SLA risk, and account health in one operations surface.</Typography>
             </Card>
-            <Card eyebrow="Proof" title="Every page exercises ApexUI in context">
+            <Card eyebrow="Proof" title="Every page exercises CorvaUI in context">
               <Typography variant="body">Marketing, metrics, forms, records, settings, and package proof share the same token system.</Typography>
             </Card>
           </div>
@@ -624,7 +627,7 @@ function DataTablePage(_props: PageProps) {
   return (
     <RecordsPageTemplate
       title="Service records data table"
-      description="A routed data-table page proving one-line ApexUI DataGrid sorting, filtering, and paging in React."
+      description="A routed data-table page proving one-line CorvaUI DataGrid sorting, filtering, and paging in React."
       controls={
         <Toolbar label="Data table controls" actions={<ButtonGroup label="Table actions"><Button size="sm">Export CSV</Button><Button size="sm" variant="secondary">Save view</Button></ButtonGroup>}>
           <SearchForm className="customer-search" label="Find service record" placeholder="Use column filters below for scoped search" onSubmit={() => undefined} />
@@ -673,7 +676,7 @@ function SettingsPage({ mode, setMode }: PageProps) {
       preferences={
         <Card eyebrow="Workspace" title="Operating defaults">
           <Stack gap="md">
-            <TextInput label="Workspace name" defaultValue="Northstar Central" />
+            <TextInput label="Workspace name" defaultValue="Corva Central" />
             <Select
               label="Locale"
               defaultValue="en-US"
@@ -704,7 +707,7 @@ function SettingsPage({ mode, setMode }: PageProps) {
             <Rating label="Executive readability" value={4} />
             <Progress label="Theme coverage" value={100} />
             <Progress label="Route coverage" value={100} />
-            <Alert tone="success" title="Settings saved">Preferences use the same ApexUI controls as every other page.</Alert>
+            <Alert tone="success" title="Settings saved">Preferences use the same CorvaUI controls as every other page.</Alert>
           </Stack>
         </Card>
       }
@@ -716,7 +719,7 @@ function ProofPage({ theme }: PageProps) {
   return (
     <ProofTemplate
       title="React integration details"
-      description="The demo installs real ApexUI packages from npm and uses route-level composition instead of preview-only examples."
+      description="The demo installs real CorvaUI packages from npm and uses route-level composition instead of preview-only examples."
       install={
         <Card eyebrow="Install path" title="@apexui/react">
           <Stepper activeIndex={3} steps={proofSteps} />
@@ -729,7 +732,7 @@ function ProofPage({ theme }: PageProps) {
             items={[
               { id: "routing", label: "Routing", description: "Hash routes work on GitHub Pages without rewrite config.", meta: <Badge tone="success">Live</Badge> },
               { id: "theme", label: "Theme", description: `${theme} is applied to html and the app shell.`, meta: <Badge tone="info">Scoped</Badge> },
-              { id: "components", label: "Components", description: "Marketing, dashboard, forms, records, settings, and proof pages use ApexUI components.", meta: <Badge tone="success">Dogfood</Badge> }
+              { id: "components", label: "Components", description: "Marketing, dashboard, forms, records, settings, and proof pages use CorvaUI components.", meta: <Badge tone="success">Dogfood</Badge> }
             ]}
           />
           <Alert tone="info" title="Registry check">This app depends on @apexui/react and @apexui/tokens from npm.</Alert>
@@ -742,7 +745,7 @@ function ProofPage({ theme }: PageProps) {
             { key: "page", header: "Page" },
             { key: "purpose", header: "Purpose" },
             { key: "template", header: "Template" },
-            { key: "components", header: "ApexUI coverage" }
+            { key: "components", header: "CorvaUI coverage" }
           ]}
           rows={[
             { page: "Home", purpose: "Marketing", template: "MarketingHomeTemplate", components: "Header, navigation, Card, Chart, Metric, Link" },
